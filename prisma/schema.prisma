@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Car {
+  id               String   @id @default(cuid())
+  slug             String   @unique
+  brand            String
+  model            String
+  title            String
+  category         String   // comfort | standard | business | premium
+  price            Int
+  year             Int
+  addedAt          DateTime @default(now())
+  mileage          Int
+  engineType       String
+  engineVolume     String
+  horsepower       Int
+  transmission     String
+  drive            String
+  bodyType         String
+  seats            Int
+  configuration    String
+  shortDescription String
+  fullDescription  String
+  mainImage        String
+  galleryImages    String   @default("[]") // JSON array
+  damageImages     String   @default("[]") // JSON array
+  insuranceImages  String   @default("[]") // JSON array
+  damageText       String?
+  status           String   @default("active") // active | sold | hidden
+  similarCars      String   @default("[]") // JSON array of slugs
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  author    String
+  city      String
+  rating    Int
+  text      String
+  date      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Stats {
+  id             String @id @default("main")
+  selectedCars   Int    @default(0)
+  deliveredCars  Int    @default(0)
+  completedDeals Int    @default(0)
+  happyClients   Int    @default(0)
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  excerpt     String
+  content     String
+  coverImage  String
+  publishedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactRequest {
+  id                 String   @id @default(cuid())
+  name               String
+  phone              String
+  desiredCar         String?
+  budget             String?
+  deliveryCity       String?
+  comment            String?
+  preferredMessenger String   @default("telegram")
+  createdAt          DateTime @default(now())
+  isRead             Boolean  @default(false)
+}

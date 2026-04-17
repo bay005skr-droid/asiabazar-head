@@ -31,9 +31,9 @@ const messengers = [
   {
     href: 'https://max.ru/asiabazar25',
     label: 'MAX',
-    color: 'bg-white border border-gray-200',
+    color: 'bg-[#7B44CF] hover:bg-[#6A33C2]',
     icon: (
-      <div className="w-5 h-5 rounded-full overflow-hidden flex-shrink-0">
+      <div className="w-5 h-5 rounded-full overflow-hidden flex-shrink-0 bg-white">
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg/1280px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg.png"
           alt="MAX"
@@ -69,7 +69,7 @@ export function FloatingButtons() {
                 )}
               >
                 {m.icon}
-                <span className="hidden sm:block">{m.label}</span>
+                <span>{m.label}</span>
               </a>
             ))}
           </div>

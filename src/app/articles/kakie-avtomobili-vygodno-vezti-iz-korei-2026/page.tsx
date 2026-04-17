@@ -95,8 +95,8 @@ const summary = [
 
 export default function ArticlePage() {
   return (
-    <div className="min-h-screen bg-white pt-20 pb-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white pt-20">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
 
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-gray-400 text-sm py-6">
@@ -113,8 +113,8 @@ export default function ArticlePage() {
         {/* Cover */}
         <div className="relative rounded-2xl overflow-hidden aspect-[21/9] mb-8 shadow-card">
           <img
-            src="https://carskorea.storage.yandexcloud.net/490b6b4a_1771423744.jpg"
-            alt="Автомобили из Кореи 2026"
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/2021_Hyundai_Tucson_%28NX4%29_Elite_2WD_wagon_%282021-09-02%29_01.jpg/1280px-2021_Hyundai_Tucson_%28NX4%29_Elite_2WD_wagon_%282021-09-02%29_01.jpg"
+            alt="Автомобили из Кореи"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
@@ -243,9 +243,7 @@ export default function ArticlePage() {
 
       </div>
 
-      <div className="mt-16">
-        <ContactSection />
-      </div>
+      <ContactSection />
     </div>
   )
 }

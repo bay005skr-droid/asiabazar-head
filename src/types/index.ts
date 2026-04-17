@@ -53,20 +53,48 @@ export interface Stats {
   happyClients: number
 }
 
-export interface ArticleCategory {
-  name: string
-  emoji: string
-  description: string
-  whoFor: string
-  advantages: string[]
-  budget: string
-  examples: string[]
+// ── Article block types ───────────────────────────────────────────────────
+export interface TextBlock {
+  type: 'text'
+  heading: string
+  body: string // \n\n-separated paragraphs
 }
 
+export interface CarItem { name: string; desc: string }
+export interface StrategyGroup { label: string; cars: CarItem[] }
+
+export interface StrategyBlock {
+  type: 'strategy'
+  title: string
+  color: 'blue' | 'violet' | 'amber' | 'red' | 'slate'
+  groups: StrategyGroup[]
+  advantages: string[]
+}
+
+export interface HighlightBlock {
+  type: 'highlight'
+  heading: string
+  color: 'amber' | 'blue' | 'emerald' | 'red'
+  items: string[]
+}
+
+export interface SummaryBlock {
+  type: 'summary'
+  heading: string
+  rows: { label: string; models: string }[]
+  note: string
+}
+
+export type ArticleBlock = TextBlock | StrategyBlock | HighlightBlock | SummaryBlock
+
 export interface ArticleContent {
-  intro: string
-  categories: ArticleCategory[]
-  conclusion: string
+  blocks: ArticleBlock[]
+}
+
+// legacy — kept for potential migration
+export interface ArticleCategory {
+  name: string; emoji: string; description: string
+  whoFor: string; advantages: string[]; budget: string; examples: string[]
 }
 
 export interface Article {

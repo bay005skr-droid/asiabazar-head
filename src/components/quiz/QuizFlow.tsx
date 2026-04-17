@@ -2,29 +2,72 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, CheckCircle, Loader2, Send, Car, Bus, LayoutGrid } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle, Loader2, Send, LayoutGrid } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { trackEvent } from '@/components/analytics/AnalyticsTracker'
 
 // ─── Step data ───────────────────────────────────────────────────────────────
 
+function SedanIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M2 15.5h20v-1.5L20 11h-2.5l-2-3.5H8.5L6.5 11H4l-2 3v2z" />
+      <circle cx="7" cy="17.5" r="1.6" />
+      <circle cx="17" cy="17.5" r="1.6" />
+    </svg>
+  )
+}
+
+function CrossoverIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M2 15.5h20v-2L20 10H4l-2 3.5v2z" />
+      <path d="M5 10l1.5-3h11l1.5 3" />
+      <circle cx="7" cy="17.5" r="1.6" />
+      <circle cx="17" cy="17.5" r="1.6" />
+    </svg>
+  )
+}
+
+function HatchbackIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M2 15.5h20v-1.5L18 8.5H8.5L6 11H4l-2 3v2z" />
+      <path d="M18 8.5l3.5 7" />
+      <circle cx="7" cy="17.5" r="1.6" />
+      <circle cx="17" cy="17.5" r="1.6" />
+    </svg>
+  )
+}
+
+function MinivanIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <rect x="2.5" y="7.5" width="19" height="8" rx="1.5" />
+      <path d="M2.5 12h19" />
+      <path d="M10 7.5v4.5" />
+      <circle cx="7" cy="17.5" r="1.6" />
+      <circle cx="17" cy="17.5" r="1.6" />
+    </svg>
+  )
+}
+
 function PickupIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M2 14h1l2-6h7l3 4h4a1 1 0 0 1 1 1v3H2v-2z" />
-      <path d="M5 14v2" />
-      <path d="M15 12l1.5 2" />
-      <circle cx="6.5" cy="17.5" r="1.5" />
-      <circle cx="17.5" cy="17.5" r="1.5" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M2 15.5h20v-2L20 10h-5v-2.5H8L6 10H4l-2 3.5v2z" />
+      <path d="M15 10v5.5" />
+      <circle cx="7" cy="17.5" r="1.6" />
+      <circle cx="17" cy="17.5" r="1.6" />
     </svg>
   )
 }
 
 const BODY_TYPES = [
-  { value: 'Седан',     Icon: Car },
-  { value: 'Кроссовер', Icon: Car },
-  { value: 'Хэтчбек',  Icon: Car },
-  { value: 'Минивэн',  Icon: Bus },
+  { value: 'Седан',     Icon: SedanIcon },
+  { value: 'Кроссовер', Icon: CrossoverIcon },
+  { value: 'Хэтчбек',  Icon: HatchbackIcon },
+  { value: 'Минивэн',  Icon: MinivanIcon },
   { value: 'Пикап',    Icon: PickupIcon },
   { value: 'Любой',    Icon: LayoutGrid },
 ]
@@ -58,8 +101,8 @@ const MESSENGERS = [
   {
     value: 'max',
     label: 'MAX',
-    bg: 'overflow-hidden',
-    icon: <img src="https://rv-ryazan.ru/wp-content/uploads/2025/12/bc2syA5jnc3Jv3Io5b2mbdWJxyv8-OofOLt2xErdzY2kfyH3vmGauFED8DrlIdh-AUSIpzgdQYfOch-_vb_1RUDf.jpg" alt="MAX" className="w-full h-full object-cover block" />,
+    bg: 'bg-[#7B44CF] overflow-hidden',
+    icon: <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg/1280px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg.png" alt="MAX" className="w-full h-full object-contain block bg-white" />,
   },
 ]
 

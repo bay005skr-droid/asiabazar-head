@@ -140,9 +140,7 @@ export default async function CatalogPage({ searchParams }: Props) {
         )}
       </div>
 
-      <div className="mt-20">
-        <ContactSection />
-      </div>
+      <ContactSection />
     </div>
   )
 }

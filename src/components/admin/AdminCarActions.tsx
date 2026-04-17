@@ -3,10 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Pencil, Trash2, ExternalLink, Loader2 } from 'lucide-react'
+import { Pencil, Trash2, ExternalLink, Loader2, Copy } from 'lucide-react'
 
 export function AdminCarActions({ carId, carSlug }: { carId: string; carSlug: string }) {
   const [deleting, setDeleting] = useState(false)
+  const [duplicating, setDuplicating] = useState(false)
   const router = useRouter()
 
   const handleDelete = async () => {
@@ -17,6 +18,16 @@ export function AdminCarActions({ carId, carSlug }: { carId: string; carSlug: st
       router.refresh()
     } finally {
       setDeleting(false)
+    }
+  }
+
+  const handleDuplicate = async () => {
+    setDuplicating(true)
+    try {
+      const res = await fetch(`/api/admin/cars/${carId}`, { method: 'POST' })
+      if (res.ok) router.refresh()
+    } finally {
+      setDuplicating(false)
     }
   }
 
@@ -37,6 +48,14 @@ export function AdminCarActions({ carId, carSlug }: { carId: string; carSlug: st
       >
         <Pencil size={14} />
       </Link>
+      <button
+        onClick={handleDuplicate}
+        disabled={duplicating}
+        className="p-1.5 text-white/30 hover:text-blue-400 rounded-lg hover:bg-blue-500/10 transition-all"
+        title="Дублировать"
+      >
+        {duplicating ? <Loader2 size={14} className="animate-spin" /> : <Copy size={14} />}
+      </button>
       <button
         onClick={handleDelete}
         disabled={deleting}

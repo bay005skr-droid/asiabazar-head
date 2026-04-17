@@ -35,7 +35,7 @@ const messengerOptions = [
     value: 'max' as const,
     label: 'MAX',
     bg: 'overflow-hidden',
-    icon: <img src="https://rv-ryazan.ru/wp-content/uploads/2025/12/bc2syA5jnc3Jv3Io5b2mbdWJxyv8-OofOLt2xErdzY2kfyH3vmGauFED8DrlIdh-AUSIpzgdQYfOch-_vb_1RUDf.jpg" alt="MAX" className="w-full h-full object-cover block" />,
+    icon: <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg/1280px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg.png" alt="MAX" className="w-full h-full object-cover block" />,
   },
 ]
 

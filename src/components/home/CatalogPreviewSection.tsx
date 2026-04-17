@@ -11,12 +11,12 @@ interface CatalogPreviewProps {
   cars: Car[]
 }
 
-const CATEGORIES: { value: CarCategory | null; label: string; desc: string }[] = [
-  { value: null,       label: 'Все',      desc: '' },
-  { value: 'standard', label: 'Стандарт', desc: 'до 2 млн' },
-  { value: 'comfort',  label: 'Комфорт',  desc: '2–3.5 млн' },
-  { value: 'business', label: 'Бизнес',   desc: '3.5–6 млн' },
-  { value: 'premium',  label: 'Премиум',  desc: 'от 6 млн' },
+const CATEGORIES: { value: CarCategory | null; label: string; price: string; icon: string }[] = [
+  { value: null,       label: 'Все авто',  price: '',          icon: '🚗' },
+  { value: 'standard', label: 'Стандарт',  price: 'до 2 млн',  icon: '🚙' },
+  { value: 'comfort',  label: 'Комфорт',   price: '2–3.5 млн', icon: '🚘' },
+  { value: 'business', label: 'Бизнес',    price: '3.5–6 млн', icon: '🚖' },
+  { value: 'premium',  label: 'Премиум',   price: 'от 6 млн',  icon: '🏎️' },
 ]
 
 export function CatalogPreviewSection({ cars }: CatalogPreviewProps) {
@@ -35,8 +35,8 @@ export function CatalogPreviewSection({ cars }: CatalogPreviewProps) {
           <p className="section-subtitle mt-2 text-base">Автомобили с проверенной историей, готовые к заказу</p>
         </div>
 
-        {/* Category tabs */}
-        <div className="flex gap-2 flex-wrap mb-8">
+        {/* Category cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
           {CATEGORIES.map((cat) => {
             const isActive = selected === cat.value
             const count = cat.value ? cars.filter((c) => c.category === cat.value).length : cars.length
@@ -45,17 +45,23 @@ export function CatalogPreviewSection({ cars }: CatalogPreviewProps) {
                 key={String(cat.value)}
                 onClick={() => setSelected(isActive && cat.value !== null ? null : cat.value)}
                 className={cn(
-                  'px-4 py-2 rounded-lg text-sm font-semibold border transition-all duration-200',
+                  'relative flex flex-col items-center gap-1.5 px-3 py-4 rounded-xl border-2 transition-all duration-200 text-center',
                   isActive
                     ? 'bg-brand-red border-brand-red text-white shadow-red'
-                    : 'bg-white border-gray-200 text-gray-600 hover:border-gray-400 hover:text-gray-900'
+                    : 'bg-white border-gray-100 text-gray-700 hover:border-brand-red/40 hover:shadow-sm'
                 )}
               >
-                {cat.desc ? `${cat.label} ${cat.desc} ₽` : cat.label}
+                <span className="text-2xl leading-none">{cat.icon}</span>
+                <span className="font-bold text-sm leading-tight">{cat.label}</span>
+                {cat.price && (
+                  <span className={cn('text-xs leading-tight', isActive ? 'text-white/75' : 'text-gray-400')}>
+                    {cat.price} ₽
+                  </span>
+                )}
                 {count > 0 && (
                   <span className={cn(
-                    'ml-1.5 text-xs',
-                    isActive ? 'text-white/70' : 'text-gray-400'
+                    'absolute top-2 right-2 text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center',
+                    isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'
                   )}>
                     {count}
                   </span>

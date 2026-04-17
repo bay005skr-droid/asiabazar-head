@@ -113,7 +113,7 @@ export default function ArticlePage() {
         {/* Cover */}
         <div className="relative rounded-2xl overflow-hidden aspect-[21/9] mb-8 shadow-card">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/2021_Hyundai_Tucson_%28NX4%29_Elite_2WD_wagon_%282021-09-02%29_01.jpg/1280px-2021_Hyundai_Tucson_%28NX4%29_Elite_2WD_wagon_%282021-09-02%29_01.jpg"
+            src="https://cdn.kia.ru/media-bank/kia-stokoney/seo-content/kak-vibrat-podhodyashhiy-avtomobil-kia.jpg"
             alt="Автомобили из Кореи"
             className="w-full h-full object-cover"
           />

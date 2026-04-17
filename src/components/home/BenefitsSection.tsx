@@ -6,59 +6,61 @@ const benefits = [
     title: 'Цена ниже рынка',
     description:
       'Покупаем напрямую на корейских площадках без посредников. Экономия 20–40% по сравнению с российскими дилерами.',
-    accent: 'from-red-500/20 to-transparent',
+    iconBg: 'bg-red-50',
+    iconColor: 'text-brand-red',
   },
   {
     icon: ShieldCheck,
     title: 'Прозрачная история',
     description:
-      'Проверяем каждый автомобиль по корейской базе CarHistory. Узнаем реальный пробег, ДТП и страховые случаи.',
-    accent: 'from-amber-500/20 to-transparent',
+      'Проверяем каждый автомобиль по корейской базе CarHistory. Узнаём реальный пробег, ДТП и страховые случаи.',
+    iconBg: 'bg-amber-50',
+    iconColor: 'text-amber-500',
   },
   {
     icon: Video,
-    title: 'Обзоры фото и видео',
+    title: 'Фото и видеообзор',
     description:
-      'Снимаем подробный видеообзор автомобиля на месте в Корее: экстерьер, интерьер, подкапотное пространство, тест.',
-    accent: 'from-blue-500/20 to-transparent',
+      'Снимаем подробный видеообзор на месте в Корее: экстерьер, интерьер, подкапотное пространство, тест.',
+    iconBg: 'bg-blue-50',
+    iconColor: 'text-blue-500',
   },
   {
     icon: FileCheck,
     title: 'Гарантия сделки',
     description:
-      'Заключаем официальный договор перед осмотром. Ваши деньги под защитой на каждом этапе — от выезда до получения авто.',
-    accent: 'from-emerald-500/20 to-transparent',
+      'Заключаем официальный договор перед осмотром. Ваши деньги под защитой на каждом этапе сделки.',
+    iconBg: 'bg-emerald-50',
+    iconColor: 'text-emerald-500',
   },
 ]
 
 export function BenefitsSection() {
   return (
-    <section className="py-20 relative">
+    <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-12">
           <div className="divider-red mx-auto mb-4" />
-          <h2 className="section-title mb-4">Почему выбирают АзияБазар</h2>
+          <h2 className="section-title mb-3">Почему выбирают АзияБазар</h2>
           <p className="section-subtitle max-w-2xl mx-auto">
-            Работаем с 2019 года. За это время помогли 600+ клиентам привезти автомобиль мечты из Кореи
+            Работаем с 2019 года. За это время помогли 600+ клиентам привезти автомобиль из Кореи
           </p>
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {benefits.map((b, i) => (
             <div
               key={b.title}
-              className="card p-6 group hover:-translate-y-1 transition-transform duration-300"
+              className="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300"
               style={{ animationDelay: `${i * 0.1}s` }}
             >
-              {/* Icon */}
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${b.accent} border border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                <b.icon size={22} className="text-brand-red" />
+              <div className={`w-11 h-11 rounded-xl ${b.iconBg} flex items-center justify-center mb-4`}>
+                <b.icon size={22} className={b.iconColor} />
               </div>
-
-              <h3 className="text-white font-bold text-lg mb-2">{b.title}</h3>
-              <p className="text-white/50 text-sm leading-relaxed">{b.description}</p>
+              <h3 className="text-gray-900 font-bold text-base mb-2">{b.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">{b.description}</p>
             </div>
           ))}
         </div>

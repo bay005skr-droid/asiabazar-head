@@ -19,9 +19,7 @@ function AnimatedCounter({ target, duration = 2000 }: { target: number; duration
     if (!el) return
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !started) {
-          setStarted(true)
-        }
+        if (entry.isIntersecting && !started) setStarted(true)
       },
       { threshold: 0.5 }
     )
@@ -59,16 +57,16 @@ export function StatsSection({ stats }: StatsSectionProps) {
   ]
 
   return (
-    <section className="py-16 bg-brand-dark-2 border-y border-white/5">
+    <section className="py-14 bg-gray-50 border-y border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {items.map((item) => (
             <div key={item.label} className="text-center">
-              <div className="text-4xl md:text-5xl font-black stats-number mb-2">
+              <div className="text-4xl md:text-5xl font-black text-gray-900 mb-2">
                 <AnimatedCounter target={item.value} />
                 {item.suffix && <span className="text-brand-red">{item.suffix}</span>}
               </div>
-              <div className="text-white/40 text-sm">{item.label}</div>
+              <div className="text-gray-400 text-sm">{item.label}</div>
             </div>
           ))}
         </div>

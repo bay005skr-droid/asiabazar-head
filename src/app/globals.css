@@ -6,29 +6,25 @@
   :root {
     --brand-red: #E02020;
     --brand-red-dark: #B91C1C;
-    --brand-dark: #0F0F0F;
-    --brand-dark-2: #1A1A1A;
-    --brand-dark-3: #242424;
-    --brand-gray: #2E2E2E;
   }
 
   * {
-    border-color: hsl(var(--border));
     box-sizing: border-box;
   }
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
-    @apply bg-brand-dark text-white antialiased;
+    @apply bg-white text-gray-900 antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   ::selection {
-    background-color: rgba(224, 32, 32, 0.3);
-    color: white;
+    background-color: rgba(224, 32, 32, 0.15);
+    color: #111827;
   }
 
   ::-webkit-scrollbar {
@@ -37,11 +33,11 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #1A1A1A;
+    background: #f3f4f6;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #3D3D3D;
+    background: #d1d5db;
     border-radius: 3px;
   }
 
@@ -60,29 +56,29 @@
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg
-      bg-transparent border border-white/20 hover:border-white/50 text-white font-semibold
+      bg-white border border-gray-200 hover:border-gray-400 text-gray-700 hover:text-gray-900 font-semibold
       transition-all duration-200
       active:scale-95 cursor-pointer select-none;
   }
 
   .btn-outline-red {
     @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg
-      bg-transparent border border-brand-red text-brand-red hover:bg-brand-red hover:text-white
+      bg-white border border-brand-red text-brand-red hover:bg-brand-red hover:text-white
       font-semibold transition-all duration-200
       active:scale-95 cursor-pointer select-none;
   }
 
   .card {
-    @apply bg-brand-dark-2 border border-white/5 rounded-2xl overflow-hidden
+    @apply bg-white border border-gray-100 rounded-2xl overflow-hidden
       shadow-card hover:shadow-card-hover transition-all duration-300;
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-bold text-white leading-tight;
+    @apply text-3xl md:text-4xl font-bold text-gray-900 leading-tight;
   }
 
   .section-subtitle {
-    @apply text-brand-text-muted text-lg leading-relaxed;
+    @apply text-gray-500 text-lg leading-relaxed;
   }
 
   .badge-category {
@@ -91,14 +87,14 @@
   }
 
   .input-base {
-    @apply w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10
-      text-white placeholder:text-white/30
-      focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red/30
+    @apply w-full px-4 py-3 rounded-lg bg-white border border-gray-200
+      text-gray-900 placeholder:text-gray-400
+      focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red/20
       transition-all duration-200;
   }
 
   .label-base {
-    @apply text-sm font-medium text-white/70 mb-1.5 block;
+    @apply text-sm font-medium text-gray-700 mb-1.5 block;
   }
 
   .animate-on-scroll {
@@ -109,22 +105,38 @@
     @apply opacity-100 translate-y-0;
   }
 
-  .gradient-text {
-    @apply bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent;
-  }
-
-  .red-gradient-text {
-    @apply bg-gradient-to-r from-brand-red to-red-400 bg-clip-text text-transparent;
-  }
-
-  .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
-  }
-
   .divider-red {
-    @apply w-12 h-1 bg-brand-red rounded-full;
+    @apply w-10 h-1 bg-brand-red rounded-full;
   }
 }
+
+/* ─── Admin dark-theme components ─── */
+  .admin-card {
+    @apply bg-brand-dark-2 border border-white/5 rounded-2xl;
+  }
+
+  .admin-input {
+    @apply w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10
+      text-white placeholder:text-white/25
+      focus:outline-none focus:border-brand-red focus:ring-1 focus:ring-brand-red/20
+      transition-all duration-200;
+  }
+
+  /* so <select> arrow is visible on dark bg */
+  .admin-input option {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .admin-label {
+    @apply text-sm font-medium text-white/50 mb-1.5 block;
+  }
+
+  .admin-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg
+      bg-white/5 border border-white/10 hover:border-white/30 text-white/70 hover:text-white
+      font-semibold transition-all duration-200 active:scale-95 cursor-pointer select-none;
+  }
 
 @layer utilities {
   .text-balance {
@@ -141,19 +153,19 @@
   }
 }
 
-/* Custom animations */
+/* Skeleton */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #1A1A1A 25%, #242424 50%, #1A1A1A 75%);
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
-/* Floating messenger button animation */
+/* Float animation */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
@@ -163,20 +175,38 @@
   animation: float 3s ease-in-out infinite;
 }
 
-/* Hero gradient overlay */
+/* Hero overlay — subtle for light theme */
 .hero-overlay {
   background: linear-gradient(
     to bottom,
-    rgba(15, 15, 15, 0.3) 0%,
-    rgba(15, 15, 15, 0.6) 60%,
-    rgba(15, 15, 15, 1) 100%
+    rgba(0, 0, 0, 0.25) 0%,
+    rgba(0, 0, 0, 0.45) 60%,
+    rgba(0, 0, 0, 0.75) 100%
   );
 }
 
-/* Stats counter */
+/* Stats numbers */
 .stats-number {
-  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #111827;
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 28s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s ease-out;
 }

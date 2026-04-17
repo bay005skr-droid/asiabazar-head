@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { FloatingButtons } from '@/components/layout/FloatingButtons'
 import { Toaster } from '@/components/ui/Toaster'
+import { AnalyticsTracker } from '@/components/analytics/AnalyticsTracker'
 
 const inter = Inter({
   subsets: ['latin', 'cyrillic'],
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0F0F0F',
+  themeColor: '#ffffff',
   width: 'device-width',
   initialScale: 1,
 }
@@ -57,12 +58,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className={inter.variable}>
-      <body className="min-h-screen bg-brand-dark text-white overflow-x-hidden">
+      <body className="min-h-screen bg-white text-gray-900">
         <Header />
         <main>{children}</main>
         <Footer />
         <FloatingButtons />
         <Toaster />
+        <AnalyticsTracker />
       </body>
     </html>
   )

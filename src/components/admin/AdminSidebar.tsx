@@ -3,25 +3,21 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import {
-  LayoutDashboard, Car, MessageSquare, Star, BarChart2,
-  LogOut, Menu, X, Settings, FileText
-} from 'lucide-react'
+import { LayoutDashboard, Car, LogOut, Menu, X, Globe, BarChart2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const nav = [
   { href: '/admin', label: 'Дашборд', icon: LayoutDashboard, exact: true },
   { href: '/admin/cars', label: 'Автомобили', icon: Car },
-  { href: '/admin/requests', label: 'Заявки', icon: MessageSquare },
-  { href: '/admin/reviews', label: 'Отзывы', icon: Star },
-  { href: '/admin/stats', label: 'Статистика', icon: BarChart2 },
-  { href: '/admin/article', label: 'Статья', icon: FileText },
+  { href: '/admin/analytics', label: 'Аналитика', icon: BarChart2 },
 ]
 
 export function AdminSidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  if (pathname === '/admin/login') return null
 
   const logout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' })
@@ -33,7 +29,6 @@ export function AdminSidebar() {
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
-      {/* Logo */}
       <div className="p-5 border-b border-white/5 flex items-center gap-3">
         <div className="w-8 h-8 rounded-lg bg-brand-red flex items-center justify-center">
           <span className="text-white font-black text-sm">АБ</span>
@@ -44,7 +39,6 @@ export function AdminSidebar() {
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
         {nav.map((item) => (
           <Link
@@ -64,14 +58,13 @@ export function AdminSidebar() {
         ))}
       </nav>
 
-      {/* Bottom */}
       <div className="p-3 border-t border-white/5 space-y-0.5">
         <Link
           href="/"
           target="_blank"
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/40 hover:text-white hover:bg-white/5 transition-all"
         >
-          <Settings size={17} />
+          <Globe size={17} />
           Открыть сайт
         </Link>
         <button
@@ -87,7 +80,6 @@ export function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile header */}
       <div className="fixed top-0 left-0 right-0 z-40 lg:hidden bg-brand-dark-2 border-b border-white/5 flex items-center justify-between px-4 h-16">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-brand-red flex items-center justify-center">
@@ -100,12 +92,10 @@ export function AdminSidebar() {
         </button>
       </div>
 
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 bg-brand-dark-2 border-r border-white/5 flex-col z-30">
+      <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 bg-brand-dark-2 border-r border-white/5 flex-col z-40">
         {sidebarContent}
       </aside>
 
-      {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />

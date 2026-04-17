@@ -6,31 +6,45 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Send, CheckCircle, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { trackEvent } from '@/components/analytics/AnalyticsTracker'
 
 const schema = z.object({
   name: z.string().min(2, 'Введите имя').max(80),
   phone: z.string().min(10, 'Введите корректный номер'),
   desiredCar: z.string().optional(),
-  budget: z.string().optional(),
   deliveryCity: z.string().optional(),
-  comment: z.string().optional(),
   preferredMessenger: z.enum(['telegram', 'max', 'whatsapp']),
 })
 
 type FormData = z.infer<typeof schema>
 
 const messengerOptions = [
-  { value: 'telegram', label: 'Telegram' },
-  { value: 'max', label: 'MAX' },
-  { value: 'whatsapp', label: 'WhatsApp' },
-] as const
+  {
+    value: 'telegram' as const,
+    label: 'Telegram',
+    bg: 'bg-[#29A8EB]',
+    icon: <svg viewBox="0 0 24 24" width="13" height="13" fill="white"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>,
+  },
+  {
+    value: 'whatsapp' as const,
+    label: 'WhatsApp',
+    bg: 'bg-[#25D366]',
+    icon: <svg viewBox="0 0 24 24" width="13" height="13" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>,
+  },
+  {
+    value: 'max' as const,
+    label: 'MAX',
+    bg: 'overflow-hidden',
+    icon: <img src="https://rv-ryazan.ru/wp-content/uploads/2025/12/bc2syA5jnc3Jv3Io5b2mbdWJxyv8-OofOLt2xErdzY2kfyH3vmGauFED8DrlIdh-AUSIpzgdQYfOch-_vb_1RUDf.jpg" alt="MAX" className="w-full h-full object-cover block" />,
+  },
+]
 
 interface ContactFormProps {
   defaultCar?: string
   compact?: boolean
 }
 
-export function ContactForm({ defaultCar, compact }: ContactFormProps) {
+export function ContactForm({ compact }: ContactFormProps) {
   const [success, setSuccess] = useState(false)
   const {
     register,
@@ -41,10 +55,7 @@ export function ContactForm({ defaultCar, compact }: ContactFormProps) {
     reset,
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      desiredCar: defaultCar || '',
-      preferredMessenger: 'telegram',
-    },
+    defaultValues: { preferredMessenger: 'telegram' },
   })
 
   const messenger = watch('preferredMessenger')
@@ -57,6 +68,7 @@ export function ContactForm({ defaultCar, compact }: ContactFormProps) {
         body: JSON.stringify(data),
       })
       if (!res.ok) throw new Error()
+      trackEvent('form_submit', { messenger: data.preferredMessenger })
       setSuccess(true)
       reset()
       setTimeout(() => setSuccess(false), 6000)
@@ -68,12 +80,12 @@ export function ContactForm({ defaultCar, compact }: ContactFormProps) {
   if (success) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
-          <CheckCircle size={32} className="text-emerald-400" />
+        <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+          <CheckCircle size={32} className="text-emerald-500" />
         </div>
-        <h3 className="text-xl font-bold text-white">Заявка отправлена!</h3>
-        <p className="text-white/50 max-w-xs">
-          Мы свяжемся с вами в ближайшее время и подберём лучшие варианты.
+        <h3 className="text-xl font-bold text-gray-900">Заявка отправлена!</h3>
+        <p className="text-gray-500 max-w-xs text-sm">
+          Свяжемся с вами в ближайшее время — обычно в течение 15 минут.
         </p>
       </div>
     )
@@ -81,16 +93,15 @@ export function ContactForm({ defaultCar, compact }: ContactFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {/* Row 1 */}
       <div className={cn('grid gap-4', compact ? 'grid-cols-1' : 'sm:grid-cols-2')}>
         <div>
           <label className="label-base">Имя *</label>
           <input
             {...register('name')}
             placeholder="Ваше имя"
-            className={cn('input-base', errors.name && 'border-red-500 focus:border-red-500')}
+            className={cn('input-base', errors.name && 'border-red-400 focus:border-red-500')}
           />
-          {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
+          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
         </div>
         <div>
           <label className="label-base">Телефон *</label>
@@ -98,37 +109,50 @@ export function ContactForm({ defaultCar, compact }: ContactFormProps) {
             {...register('phone')}
             placeholder="+7 (___) ___-__-__"
             type="tel"
-            className={cn('input-base', errors.phone && 'border-red-500 focus:border-red-500')}
+            className={cn('input-base', errors.phone && 'border-red-400 focus:border-red-500')}
           />
-          {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
+          {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}
         </div>
       </div>
 
-      {/* Row 2 */}
-      {!compact && (
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label className="label-base">Какой автомобиль интересует</label>
-            <input
-              {...register('desiredCar')}
-              placeholder="Hyundai Tucson, Kia K5..."
-              className="input-base"
-            />
-          </div>
-          <div>
-            <label className="label-base">Бюджет</label>
-            <input
-              {...register('budget')}
-              placeholder="от 2 000 000 ₽"
-              className="input-base"
-            />
-          </div>
+      {/* Car interest */}
+      <div>
+        <label className="label-base">Марка и модель автомобиля</label>
+        <input
+          {...register('desiredCar')}
+          placeholder="Hyundai Tucson, Kia Sportage..."
+          className="input-base"
+        />
+      </div>
+
+      {/* Messenger choice */}
+      <div>
+        <label className="label-base">Где удобней связаться</label>
+        <div className="flex gap-2">
+          {messengerOptions.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setValue('preferredMessenger', opt.value)}
+              className={cn(
+                'flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-sm font-semibold border transition-all duration-200',
+                messenger === opt.value
+                  ? 'border-brand-red bg-red-50 text-brand-red'
+                  : 'bg-white border-gray-200 text-gray-500 hover:border-gray-400 hover:text-gray-700'
+              )}
+            >
+              <div className={cn('w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0', opt.bg)}>
+                {opt.icon}
+              </div>
+              {opt.label}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
 
       {!compact && (
         <div>
-          <label className="label-base">Город доставки</label>
+          <label className="label-base">Город доставки автомобиля</label>
           <input
             {...register('deliveryCity')}
             placeholder="Москва, Хабаровск, Новосибирск..."
@@ -137,57 +161,16 @@ export function ContactForm({ defaultCar, compact }: ContactFormProps) {
         </div>
       )}
 
-      {!compact && (
-        <div>
-          <label className="label-base">Комментарий</label>
-          <textarea
-            {...register('comment')}
-            placeholder="Любые пожелания: цвет, комплектация, срок..."
-            rows={3}
-            className="input-base resize-none"
-          />
-        </div>
-      )}
-
-      {/* Messenger choice */}
-      <div>
-        <label className="label-base">Удобный способ связи</label>
-        <div className="flex gap-2">
-          {messengerOptions.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => setValue('preferredMessenger', opt.value)}
-              className={cn(
-                'flex-1 py-2.5 rounded-lg text-sm font-semibold border transition-all duration-200',
-                messenger === opt.value
-                  ? 'bg-brand-red border-brand-red text-white'
-                  : 'bg-white/5 border-white/10 text-white/50 hover:border-white/30 hover:text-white'
-              )}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Submit */}
       <button type="submit" disabled={isSubmitting} className="btn-primary w-full justify-center py-4 text-base">
         {isSubmitting ? (
-          <>
-            <Loader2 size={18} className="animate-spin" />
-            Отправляем...
-          </>
+          <><Loader2 size={18} className="animate-spin" />Отправляем...</>
         ) : (
-          <>
-            <Send size={18} />
-            Получить подборку
-          </>
+          <><Send size={18} />Отправить заявку</>
         )}
       </button>
 
-      <p className="text-white/25 text-xs text-center">
-        Мы уточним запрос, подберём 1–3 варианта и свяжемся с вами удобным способом
+      <p className="text-gray-400 text-xs text-center">
+        Свяжемся в течение 15 минут и подберём лучшие варианты из Кореи
       </p>
     </form>
   )

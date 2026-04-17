@@ -4,7 +4,11 @@ import { adminMiddleware } from '@/lib/auth'
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+  // Protect all /admin routes except the login page itself
+  if (
+    (pathname === '/admin' || pathname.startsWith('/admin/')) &&
+    !pathname.startsWith('/admin/login')
+  ) {
     const redirect = await adminMiddleware(request)
     if (redirect) return redirect
   }
@@ -13,5 +17,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/admin', '/admin/:path*'],
 }

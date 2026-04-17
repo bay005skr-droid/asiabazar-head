@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Plus, Pencil, Trash2, Eye, EyeOff } from 'lucide-react'
 import prisma from '@/lib/prisma'
 import { parseCar, formatPrice, formatMileage } from '@/lib/utils'
-import { CATEGORY_LABELS, STATUS_LABELS } from '@/types'
+import { Car, CATEGORY_LABELS, STATUS_LABELS } from '@/types'
 import { AdminCarActions } from '@/components/admin/AdminCarActions'
 
 export const metadata: Metadata = { title: 'Автомобили' }
@@ -74,7 +74,7 @@ export default async function AdminCarsPage({ searchParams }: Props) {
       </div>
 
       {/* Table */}
-      <div className="card overflow-hidden">
+      <div className="admin-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -82,6 +82,7 @@ export default async function AdminCarsPage({ searchParams }: Props) {
                 <th className="text-left px-4 py-3 text-white/40 font-medium">Автомобиль</th>
                 <th className="text-left px-4 py-3 text-white/40 font-medium hidden md:table-cell">Категория</th>
                 <th className="text-left px-4 py-3 text-white/40 font-medium hidden lg:table-cell">Пробег</th>
+                <th className="text-left px-4 py-3 text-white/40 font-medium hidden xl:table-cell">Добавил</th>
                 <th className="text-right px-4 py-3 text-white/40 font-medium">Цена</th>
                 <th className="text-center px-4 py-3 text-white/40 font-medium">Статус</th>
                 <th className="text-right px-4 py-3 text-white/40 font-medium">Действия</th>
@@ -99,6 +100,11 @@ export default async function AdminCarsPage({ searchParams }: Props) {
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell text-white/50 text-xs">
                     {formatMileage(car.mileage)}
+                  </td>
+                  <td className="px-4 py-3 hidden xl:table-cell">
+                    <span className="text-white/30 text-xs font-mono">
+                      {(car as Car & { addedBy?: string }).addedBy || '—'}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-right font-bold text-white">
                     {formatPrice(car.price)}

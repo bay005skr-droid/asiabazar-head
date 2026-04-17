@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
-import { getAdminSession } from '@/lib/auth'
+import { getAdminSession, getAdminName } from '@/lib/auth'
 import { parseCar, slugify } from '@/lib/utils'
+
+function generateShortDescription(full: string): string {
+  const words = full.trim().split(/\s+/)
+  const slice = words.slice(0, 22)
+  return slice.join(' ') + (words.length > 22 ? '...' : '')
+}
 
 const carSchema = z.object({
   brand: z.string().min(1),
@@ -20,9 +26,8 @@ const carSchema = z.object({
   bodyType: z.string().min(1),
   seats: z.number().int().positive(),
   configuration: z.string().min(1),
-  shortDescription: z.string().min(1),
   fullDescription: z.string().min(1),
-  mainImage: z.string().url(),
+  mainImage: z.string().min(1),
   galleryImages: z.array(z.string()).default([]),
   damageImages: z.array(z.string()).default([]),
   insuranceImages: z.array(z.string()).default([]),
@@ -47,16 +52,19 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const data = carSchema.parse(body)
     const slug = slugify(`${data.brand}-${data.model}-${data.year}-${Date.now()}`)
+    const adminName = await getAdminName()
 
     const car = await prisma.car.create({
       data: {
         ...data,
         slug,
+        shortDescription: generateShortDescription(data.fullDescription),
         galleryImages: JSON.stringify(data.galleryImages),
         damageImages: JSON.stringify(data.damageImages),
         insuranceImages: JSON.stringify(data.insuranceImages),
         similarCars: JSON.stringify(data.similarCars),
         addedAt: new Date(),
+        addedBy: adminName || 'unknown',
       },
     })
     return NextResponse.json({ car: parseCar(car as Record<string, unknown>) }, { status: 201 })

@@ -113,10 +113,10 @@ export const CATEGORY_LABELS: Record<CarCategory, string> = {
 }
 
 export const CATEGORY_COLORS: Record<CarCategory, string> = {
-  comfort: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  standard: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-  business: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  premium: 'bg-red-500/20 text-red-300 border-red-500/30',
+  comfort: 'bg-blue-50 text-blue-700 border-blue-100',
+  standard: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  business: 'bg-amber-50 text-amber-700 border-amber-100',
+  premium: 'bg-red-50 text-red-700 border-red-100',
 }
 
 export const STATUS_LABELS: Record<CarStatus, string> = {

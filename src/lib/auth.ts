@@ -5,11 +5,16 @@ import { NextRequest, NextResponse } from 'next/server'
 const SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'asiabazar-secret-key-change-in-production'
 )
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'buyer005code'
 const COOKIE_NAME = 'ab_admin_session'
 
-export async function signAdminToken(): Promise<string> {
-  return await new SignJWT({ role: 'admin' })
+const ADMIN_USERS = [
+  { password: process.env.ADMIN_PASSWORD || 'bayer004code', name: 'admin' },
+  { password: 'bayer005code', name: 'admin2' },
+  { password: 'bayer006code', name: 'admin3' },
+]
+
+export async function signAdminToken(adminName: string): Promise<string> {
+  return await new SignJWT({ role: 'admin', adminName })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('24h')
@@ -25,8 +30,28 @@ export async function verifyAdminToken(token: string): Promise<boolean> {
   }
 }
 
-export async function checkAdminPassword(password: string): Promise<boolean> {
-  return password === ADMIN_PASSWORD
+export async function getAdminNameFromToken(token: string): Promise<string | null> {
+  try {
+    const { payload } = await jwtVerify(token, SECRET)
+    if (payload.role !== 'admin') return null
+    return (payload.adminName as string) || null
+  } catch {
+    return null
+  }
+}
+
+/** Returns the admin name (buyer004 / buyer005 / buyer006) or null if not authed */
+export async function getAdminName(): Promise<string | null> {
+  const cookieStore = cookies()
+  const token = cookieStore.get(COOKIE_NAME)?.value
+  if (!token) return null
+  return getAdminNameFromToken(token)
+}
+
+/** Returns the matching admin name if password is correct, null otherwise */
+export async function checkAdminPassword(password: string): Promise<string | null> {
+  const user = ADMIN_USERS.find((u) => u.password === password)
+  return user ? user.name : null
 }
 
 export async function getAdminSession(): Promise<boolean> {
@@ -39,9 +64,9 @@ export async function getAdminSession(): Promise<boolean> {
 export function setAdminCookie(response: NextResponse, token: string): NextResponse {
   response.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24, // 24 hours
+    maxAge: 60 * 60 * 24,
     path: '/',
   })
   return response

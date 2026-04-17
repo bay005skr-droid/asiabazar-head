@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -35,6 +35,7 @@ model Car {
   damageText       String?
   status           String   @default("active") // active | sold | hidden
   similarCars      String   @default("[]") // JSON array of slugs
+  addedBy          String?  // internal: admin name (buyer004/005/006), never shown on site
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -80,4 +81,14 @@ model ContactRequest {
   preferredMessenger String   @default("telegram")
   createdAt          DateTime @default(now())
   isRead             Boolean  @default(false)
+}
+
+model AnalyticsEvent {
+  id        Int      @id @default(autoincrement())
+  type      String   // session | messenger_click | form_submit | quiz_complete | car_view
+  meta      String?  // JSON: { page, messenger, carSlug, ... }
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
 }

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Save, Loader2 } from 'lucide-react'
 
 export default function AdminStatsPage() {
-  const [stats, setStats] = useState({ selectedCars: 0, deliveredCars: 0, completedDeals: 0, happyClients: 0 })
+  const [stats, setStats] = useState({ selectedCars: 0, deliveredCars: 0, completedDeals: 0, happyClients: 0, deliveryDays: 12 })
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -23,6 +23,7 @@ export default function AdminStatsPage() {
   if (loading) return <div className="text-white/30">Загрузка...</div>
 
   const fields = [
+    { key: 'deliveryDays', label: 'Срок доставки (дней)' },
     { key: 'selectedCars', label: 'Автомобилей подобрано' },
     { key: 'deliveredCars', label: 'Автомобилей доставлено' },
     { key: 'completedDeals', label: 'Успешных сделок' },
@@ -44,7 +45,7 @@ export default function AdminStatsPage() {
           {saved ? 'Сохранено!' : 'Сохранить'}
         </button>
       </form>
-      <p className="text-white/30 text-xs">Эти цифры отображаются в блоке статистики на главной странице.</p>
+      <p className="text-white/30 text-xs">Срок доставки отображается в герое на главной. Остальные цифры — в блоке статистики.</p>
     </div>
   )
 }

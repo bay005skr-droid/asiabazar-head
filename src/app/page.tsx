@@ -12,13 +12,13 @@ import { parseCar } from '@/lib/utils'
 export const revalidate = 60
 
 export default async function HomePage() {
-  const carsRaw = await prisma.car.findMany({
-    where: { status: 'active' },
-    orderBy: { createdAt: 'desc' },
-    take: 8,
-  })
+  const [carsRaw, statsRow] = await Promise.all([
+    prisma.car.findMany({ where: { status: 'active' }, orderBy: { createdAt: 'desc' }, take: 8 }),
+    prisma.stats.findUnique({ where: { id: 'main' } }),
+  ])
 
   const cars = carsRaw.map(parseCar)
+  const deliveryDays = statsRow?.deliveryDays ?? 12
 
   // Cars for the slideshow in ArticlePromoSection (with price + title)
   const articleCars = cars
@@ -28,7 +28,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSection cars={cars} />
+      <HeroSection cars={cars} deliveryDays={deliveryDays} />
       <CatalogPreviewSection cars={cars} />
       <HomeStatsSection />
       <ArticlePromoSection cars={articleCars} />

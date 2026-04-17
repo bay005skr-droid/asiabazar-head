@@ -73,25 +73,18 @@ function ActivityToast() {
 
 interface HeroSectionProps {
   cars: Car[]
+  deliveryDays: number
 }
 
-export function HeroSection({ cars }: HeroSectionProps) {
+export function HeroSection({ cars, deliveryDays }: HeroSectionProps) {
   const [carIdx, setCarIdx] = useState(0)
   const [imgVisible, setImgVisible] = useState(true)
-  const [deliveryDays, setDeliveryDays] = useState(12)
   // Duplicate for seamless marquee
   const marqueeItems = [...MARQUEE_TEXT, ...MARQUEE_TEXT]
 
   const activeCars = cars.filter((c) => c.mainImage)
   const currentCar = activeCars[carIdx] ?? null
 
-  useEffect(() => {
-    // Random 10–15 on mount, then refresh every 30s
-    const randomDays = () => Math.floor(Math.random() * 6) + 10
-    setDeliveryDays(randomDays())
-    const t = setInterval(() => setDeliveryDays(randomDays()), 30000)
-    return () => clearInterval(t)
-  }, [])
 
   useEffect(() => {
     if (activeCars.length <= 1) return

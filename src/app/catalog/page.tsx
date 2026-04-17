@@ -21,6 +21,8 @@ interface Props {
     yearMin?: string
     yearMax?: string
     mileageMax?: string
+    priceMin?: string
+    priceMax?: string
     sort?: string
     page?: string
   }
@@ -42,6 +44,12 @@ export default async function CatalogPage({ searchParams }: Props) {
     }
   }
   if (searchParams.mileageMax) where.mileage = { lte: parseInt(searchParams.mileageMax) }
+  if (searchParams.priceMin || searchParams.priceMax) {
+    where.price = {
+      ...(searchParams.priceMin ? { gte: parseInt(searchParams.priceMin) } : {}),
+      ...(searchParams.priceMax ? { lte: parseInt(searchParams.priceMax) } : {}),
+    }
+  }
 
   let orderBy: Prisma.CarOrderByWithRelationInput = { createdAt: 'desc' }
   switch (searchParams.sort) {
@@ -65,7 +73,8 @@ export default async function CatalogPage({ searchParams }: Props) {
   const hasFilters = !!(
     searchParams.category || searchParams.brand || searchParams.engineType ||
     searchParams.transmission || searchParams.yearMin || searchParams.yearMax ||
-    searchParams.mileageMax || (searchParams.sort && searchParams.sort !== 'newest')
+    searchParams.mileageMax || searchParams.priceMin || searchParams.priceMax ||
+    (searchParams.sort && searchParams.sort !== 'newest')
   )
 
   return (
@@ -89,6 +98,8 @@ export default async function CatalogPage({ searchParams }: Props) {
           currentYearMin={searchParams.yearMin || ''}
           currentYearMax={searchParams.yearMax || ''}
           currentMileageMax={searchParams.mileageMax || ''}
+          currentPriceMin={searchParams.priceMin || ''}
+          currentPriceMax={searchParams.priceMax || ''}
           hasFilters={hasFilters}
         />
 

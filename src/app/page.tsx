@@ -1,6 +1,7 @@
 import { HeroSection } from '@/components/home/HeroSection'
 import { ArticlePromoSection } from '@/components/home/ArticlePromoSection'
 import { CatalogPreviewSection } from '@/components/home/CatalogPreviewSection'
+import { FeaturedArticleSection } from '@/components/home/FeaturedArticleSection'
 import { HomeStatsSection } from '@/components/home/HomeStatsSection'
 import { HowWeWorkSection } from '@/components/home/HowWeWorkSection'
 import { ReviewsSection } from '@/components/home/ReviewsSection'
@@ -12,9 +13,10 @@ import { parseCar } from '@/lib/utils'
 export const revalidate = 60
 
 export default async function HomePage() {
-  const [carsRaw, statsRow] = await Promise.all([
+  const [carsRaw, statsRow, featuredArticle] = await Promise.all([
     prisma.car.findMany({ where: { status: 'active' }, orderBy: { createdAt: 'desc' }, take: 8 }),
     prisma.stats.findUnique({ where: { id: 'main' } }),
+    prisma.article.findFirst({ orderBy: { publishedAt: 'desc' } }),
   ])
 
   const cars = carsRaw.map(parseCar)
@@ -29,6 +31,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection cars={cars} deliveryDays={deliveryDays} />
+      {featuredArticle && <FeaturedArticleSection article={featuredArticle} />}
       <CatalogPreviewSection cars={cars} />
       <HomeStatsSection />
       <ArticlePromoSection cars={articleCars} />

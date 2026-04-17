@@ -11,12 +11,54 @@ interface CatalogPreviewProps {
   cars: Car[]
 }
 
-const CATEGORIES: { value: CarCategory | null; label: string; price: string; icon: string }[] = [
-  { value: null,       label: 'Все авто',  price: '',          icon: '🚗' },
-  { value: 'standard', label: 'Стандарт',  price: 'до 2 млн',  icon: '🚙' },
-  { value: 'comfort',  label: 'Комфорт',   price: '2–3.5 млн', icon: '🚘' },
-  { value: 'business', label: 'Бизнес',    price: '3.5–6 млн', icon: '🚖' },
-  { value: 'premium',  label: 'Премиум',   price: 'от 6 млн',  icon: '🏎️' },
+const CATEGORIES: {
+  value: CarCategory | null
+  label: string
+  price: string
+  desc: string
+  gradient: string
+  badge: string
+}[] = [
+  {
+    value: null,
+    label: 'Все авто',
+    price: '',
+    desc: 'Полный каталог',
+    gradient: 'from-gray-900 to-gray-700',
+    badge: 'bg-white/20 text-white',
+  },
+  {
+    value: 'standard',
+    label: 'Стандарт',
+    price: 'до 2 млн ₽',
+    desc: 'Надёжный выбор',
+    gradient: 'from-slate-700 to-slate-500',
+    badge: 'bg-white/20 text-white',
+  },
+  {
+    value: 'comfort',
+    label: 'Комфорт',
+    price: '2–3.5 млн ₽',
+    desc: 'Оптимальное качество',
+    gradient: 'from-blue-700 to-blue-500',
+    badge: 'bg-white/20 text-white',
+  },
+  {
+    value: 'business',
+    label: 'Бизнес',
+    price: '3.5–6 млн ₽',
+    desc: 'Престиж и функции',
+    gradient: 'from-violet-700 to-violet-500',
+    badge: 'bg-white/20 text-white',
+  },
+  {
+    value: 'premium',
+    label: 'Премиум',
+    price: 'от 6 млн ₽',
+    desc: 'Лучшее из лучших',
+    gradient: 'from-brand-red to-rose-500',
+    badge: 'bg-white/20 text-white',
+  },
 ]
 
 export function CatalogPreviewSection({ cars }: CatalogPreviewProps) {
@@ -35,37 +77,40 @@ export function CatalogPreviewSection({ cars }: CatalogPreviewProps) {
           <p className="section-subtitle mt-2 text-base">Автомобили с проверенной историей, готовые к заказу</p>
         </div>
 
-        {/* Category cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+        {/* Category cards — like carskorea.shop */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-10">
           {CATEGORIES.map((cat) => {
             const isActive = selected === cat.value
-            const count = cat.value ? cars.filter((c) => c.category === cat.value).length : cars.length
+            const count = cat.value
+              ? cars.filter((c) => c.category === cat.value).length
+              : cars.length
+
             return (
               <button
                 key={String(cat.value)}
                 onClick={() => setSelected(isActive && cat.value !== null ? null : cat.value)}
                 className={cn(
-                  'relative flex flex-col items-center gap-1.5 px-3 py-4 rounded-xl border-2 transition-all duration-200 text-center',
+                  `relative flex flex-col justify-between p-4 rounded-2xl bg-gradient-to-br text-left transition-all duration-200 cursor-pointer`,
+                  cat.gradient,
                   isActive
-                    ? 'bg-brand-red border-brand-red text-white shadow-red'
-                    : 'bg-white border-gray-100 text-gray-700 hover:border-brand-red/40 hover:shadow-sm'
+                    ? 'ring-2 ring-offset-2 ring-brand-red scale-[1.02] shadow-xl'
+                    : 'opacity-85 hover:opacity-100 hover:shadow-lg hover:scale-[1.01]'
                 )}
+                style={{ minHeight: 110 }}
               >
-                <span className="text-2xl leading-none">{cat.icon}</span>
-                <span className="font-bold text-sm leading-tight">{cat.label}</span>
-                {cat.price && (
-                  <span className={cn('text-xs leading-tight', isActive ? 'text-white/75' : 'text-gray-400')}>
-                    {cat.price} ₽
-                  </span>
-                )}
-                {count > 0 && (
-                  <span className={cn(
-                    'absolute top-2 right-2 text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center',
-                    isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'
-                  )}>
-                    {count}
-                  </span>
-                )}
+                {/* Count badge */}
+                <span className={cn('self-end text-xs font-bold px-2 py-0.5 rounded-full', cat.badge)}>
+                  {count}
+                </span>
+
+                {/* Text */}
+                <div className="mt-2">
+                  <div className="text-white font-black text-base leading-tight">{cat.label}</div>
+                  {cat.price && (
+                    <div className="text-white/80 text-xs font-medium mt-0.5">{cat.price}</div>
+                  )}
+                  <div className="text-white/60 text-xs mt-0.5">{cat.desc}</div>
+                </div>
               </button>
             )
           })}

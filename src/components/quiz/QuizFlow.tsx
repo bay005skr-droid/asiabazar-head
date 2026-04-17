@@ -2,75 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, CheckCircle, Loader2, Send, LayoutGrid } from 'lucide-react'
+import { ArrowLeft, ArrowRight, CheckCircle, Loader2, Send } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { trackEvent } from '@/components/analytics/AnalyticsTracker'
 
 // ─── Step data ───────────────────────────────────────────────────────────────
 
-function SedanIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M2 15.5h20v-1.5L20 11h-2.5l-2-3.5H8.5L6.5 11H4l-2 3v2z" />
-      <circle cx="7" cy="17.5" r="1.6" />
-      <circle cx="17" cy="17.5" r="1.6" />
-    </svg>
-  )
-}
-
-function CrossoverIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M2 15.5h20v-2L20 10H4l-2 3.5v2z" />
-      <path d="M5 10l1.5-3h11l1.5 3" />
-      <circle cx="7" cy="17.5" r="1.6" />
-      <circle cx="17" cy="17.5" r="1.6" />
-    </svg>
-  )
-}
-
-function HatchbackIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M2 15.5h20v-1.5L18 8.5H8.5L6 11H4l-2 3v2z" />
-      <path d="M18 8.5l3.5 7" />
-      <circle cx="7" cy="17.5" r="1.6" />
-      <circle cx="17" cy="17.5" r="1.6" />
-    </svg>
-  )
-}
-
-function MinivanIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="2.5" y="7.5" width="19" height="8" rx="1.5" />
-      <path d="M2.5 12h19" />
-      <path d="M10 7.5v4.5" />
-      <circle cx="7" cy="17.5" r="1.6" />
-      <circle cx="17" cy="17.5" r="1.6" />
-    </svg>
-  )
-}
-
-function PickupIcon({ size = 20, className = '' }: { size?: number; className?: string }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M2 15.5h20v-2L20 10h-5v-2.5H8L6 10H4l-2 3.5v2z" />
-      <path d="M15 10v5.5" />
-      <circle cx="7" cy="17.5" r="1.6" />
-      <circle cx="17" cy="17.5" r="1.6" />
-    </svg>
-  )
-}
-
-const BODY_TYPES = [
-  { value: 'Седан',     Icon: SedanIcon },
-  { value: 'Кроссовер', Icon: CrossoverIcon },
-  { value: 'Хэтчбек',  Icon: HatchbackIcon },
-  { value: 'Минивэн',  Icon: MinivanIcon },
-  { value: 'Пикап',    Icon: PickupIcon },
-  { value: 'Любой',    Icon: LayoutGrid },
-]
+const BODY_TYPES = ['Седан', 'Кроссовер', 'Хэтчбек', 'Минивэн', 'Пикап', 'Любой']
 
 const BRANDS = [
   'Hyundai', 'Kia', 'Genesis',
@@ -123,12 +61,10 @@ const TOTAL_STEPS = 4
 
 function OptionCard({
   label,
-  Icon,
   selected,
   onClick,
 }: {
   label: string
-  Icon?: React.ElementType
   selected: boolean
   onClick: () => void
 }) {
@@ -137,18 +73,12 @@ function OptionCard({
       type="button"
       onClick={onClick}
       className={cn(
-        'relative flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 text-center cursor-pointer select-none transition-all duration-200 hover:shadow-sm active:scale-95 min-h-[72px]',
+        'relative flex items-center justify-center p-4 rounded-2xl border-2 text-center cursor-pointer select-none transition-all duration-200 hover:shadow-sm active:scale-95 min-h-[56px]',
         selected
           ? 'border-brand-red bg-red-50 shadow-red'
           : 'border-gray-100 bg-white hover:border-gray-300'
       )}
     >
-      {Icon && (
-        <Icon
-          size={20}
-          className={cn('transition-colors', selected ? 'text-brand-red' : 'text-gray-400')}
-        />
-      )}
       <span className={cn('text-sm font-semibold leading-tight', selected ? 'text-brand-red' : 'text-gray-700')}>
         {label}
       </span>
@@ -299,11 +229,10 @@ export function QuizFlow() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
             {BODY_TYPES.map((bt) => (
               <OptionCard
-                key={bt.value}
-                label={bt.value}
-                Icon={bt.Icon}
-                selected={answers.bodyType === bt.value}
-                onClick={() => set('bodyType', bt.value)}
+                key={bt}
+                label={bt}
+                selected={answers.bodyType === bt}
+                onClick={() => set('bodyType', bt)}
               />
             ))}
           </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { Fuel, Gauge, Calendar, ArrowRight, Zap, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Car, CATEGORY_LABELS, CATEGORY_COLORS } from '@/types'
@@ -14,9 +14,15 @@ interface CarCardProps {
 export function CarCard({ car, featured }: CarCardProps) {
   const [imgIdx, setImgIdx] = useState(0)
   const [loaded, setLoaded] = useState(false)
+  const imgRef = useRef<HTMLImageElement>(null)
 
   const allImages = [car.mainImage, ...car.galleryImages.filter((i) => i !== car.mainImage)]
   const hasMultiple = allImages.length > 1
+
+  // Cached images don't fire onLoad — check .complete after render
+  useEffect(() => {
+    if (imgRef.current?.complete) setLoaded(true)
+  }, [imgIdx])
 
   const prev = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -43,6 +49,7 @@ export function CarCard({ car, featured }: CarCardProps) {
         {/* Image */}
         <div className="relative overflow-hidden aspect-[16/10] bg-gray-100">
           <img
+            ref={imgRef}
             key={imgIdx}
             src={allImages[imgIdx] || car.mainImage}
             alt={car.title}

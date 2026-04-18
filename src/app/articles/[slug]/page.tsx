@@ -9,12 +9,16 @@ import { ArticleContent, ArticleBlock, TextBlock, StrategyBlock, HighlightBlock,
 interface Props { params: { slug: string } }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const article = await prisma.article.findUnique({ where: { slug: params.slug } })
-  if (!article) return { title: 'Статья не найдена' }
-  return {
-    title: article.title,
-    description: article.excerpt,
-    openGraph: { images: [article.coverImage] },
+  try {
+    const article = await prisma.article.findUnique({ where: { slug: params.slug } })
+    if (!article) return { title: 'Статья не найдена' }
+    return {
+      title: article.title,
+      description: article.excerpt,
+      openGraph: { images: [article.coverImage] },
+    }
+  } catch {
+    return { title: 'Статья' }
   }
 }
 
@@ -131,7 +135,12 @@ function renderBlock(block: ArticleBlock, i: number) {
 }
 
 export default async function ArticlePage({ params }: Props) {
-  const article = await prisma.article.findUnique({ where: { slug: params.slug } })
+  let article
+  try {
+    article = await prisma.article.findUnique({ where: { slug: params.slug } })
+  } catch {
+    notFound()
+  }
   if (!article) notFound()
 
   let content: ArticleContent

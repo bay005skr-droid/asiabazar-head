@@ -57,7 +57,7 @@ export function truncate(str: string, length: number): string {
 }
 
 export const MESSENGERS = [
-  { value: 'telegram', label: 'Telegram', href: 'https://t.me/asiabazar25', color: '#29A8EB' },
-  { value: 'max', label: 'MAX', href: 'https://max.ru/asiabazar25', color: '#FF4F00' },
-  { value: 'whatsapp', label: 'WhatsApp', href: 'https://wa.me/79149999999', color: '#25D366' },
+  { value: 'telegram', label: 'Telegram', href: 'https://t.me/+79269264042', color: '#29A8EB' },
+  { value: 'max', label: 'MAX', href: 'https://max.ru/u/f9LHodD0cOIQ9QxqkpNUSEYyXfBvpTTJp3ofefBq261OWTGHB5aCfJjgZfk', color: '#FF4F00' },
+  { value: 'whatsapp', label: 'WhatsApp', href: 'https://wa.me/79950648966', color: '#25D366' },
 ] as const

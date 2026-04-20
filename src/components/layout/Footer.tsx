@@ -9,9 +9,9 @@ const WA = <svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d=
 const MAX = <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg/1280px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg.png" alt="MAX" className="w-full h-full object-cover block" />
 
 const messengers = [
-  { href: 'https://t.me/asiabazar25',    label: 'Telegram',  bg: 'bg-[#29A8EB]', icon: TG  },
-  { href: 'https://wa.me/79149999999',   label: 'WhatsApp',  bg: 'bg-[#25D366]', icon: WA  },
-  { href: 'https://max.ru/asiabazar25',  label: 'MAX',       bg: 'overflow-hidden p-0', icon: MAX },
+  { href: 'https://t.me/+79269264042',    label: 'Telegram',  bg: 'bg-[#29A8EB]', icon: TG  },
+  { href: 'https://wa.me/79950648966',   label: 'WhatsApp',  bg: 'bg-[#25D366]', icon: WA  },
+  { href: 'https://max.ru/u/f9LHodD0cOIQ9QxqkpNUSEYyXfBvpTTJp3ofefBq261OWTGHB5aCfJjgZfk',  label: 'MAX',       bg: 'overflow-hidden p-0', icon: MAX },
 ]
 
 export function Footer() {

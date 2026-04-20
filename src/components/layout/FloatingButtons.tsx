@@ -9,7 +9,7 @@ import { trackEvent } from '@/components/analytics/AnalyticsTracker'
 
 const messengers = [
   {
-    href: 'https://t.me/asiabazar25',
+    href: 'https://t.me/+79269264042',
     label: 'Telegram',
     color: 'bg-[#29A8EB] hover:bg-[#1a9ade]',
     icon: (
@@ -19,7 +19,7 @@ const messengers = [
     ),
   },
   {
-    href: 'https://wa.me/79149999999',
+    href: 'https://wa.me/79950648966',
     label: 'WhatsApp',
     color: 'bg-[#25D366] hover:bg-[#1ebe5a]',
     icon: (
@@ -29,7 +29,7 @@ const messengers = [
     ),
   },
   {
-    href: 'https://max.ru/asiabazar25',
+    href: 'https://max.ru/u/f9LHodD0cOIQ9QxqkpNUSEYyXfBvpTTJp3ofefBq261OWTGHB5aCfJjgZfk',
     label: 'MAX',
     color: 'bg-[#7B44CF] hover:bg-[#6A33C2]',
     icon: (

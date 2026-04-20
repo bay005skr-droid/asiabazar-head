@@ -15,7 +15,7 @@ const navLinks = [
 
 const messengerLinks = [
   {
-    href: 'https://t.me/asiabazar25',
+    href: 'https://t.me/+79269264042',
     label: 'Telegram',
     bg: 'bg-[#29A8EB]',
     icon: (
@@ -25,7 +25,7 @@ const messengerLinks = [
     ),
   },
   {
-    href: 'https://wa.me/79149999999',
+    href: 'https://wa.me/79950648966',
     label: 'WhatsApp',
     bg: 'bg-[#25D366]',
     icon: (
@@ -35,7 +35,7 @@ const messengerLinks = [
     ),
   },
   {
-    href: 'https://max.ru/asiabazar25',
+    href: 'https://max.ru/u/f9LHodD0cOIQ9QxqkpNUSEYyXfBvpTTJp3ofefBq261OWTGHB5aCfJjgZfk',
     label: 'MAX',
     bg: 'overflow-hidden',
     icon: (

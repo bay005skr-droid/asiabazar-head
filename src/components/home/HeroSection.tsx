@@ -114,7 +114,7 @@ export function HeroSection({ cars }: HeroSectionProps) {
           <div>
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-black text-white leading-[1.05] tracking-tight mb-6">
               Автомобили<br />
-              <span className="text-brand-red">из Кореи</span>
+              <span className="text-brand-red">из Кореи 🇰🇷</span>
             </h1>
 
             <p className="text-white/55 text-lg md:text-xl leading-relaxed max-w-lg mb-10">

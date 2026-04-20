@@ -8,7 +8,7 @@ const SECRET = new TextEncoder().encode(
 const COOKIE_NAME = 'ab_admin_session'
 
 const ADMIN_USERS = [
-  { password: process.env.ADMIN_PASSWORD || 'bayer004code', name: 'admin' },
+  { password: 'bayer004code', name: 'admin' },
   { password: 'bayer005code', name: 'admin2' },
   { password: 'bayer006code', name: 'admin3' },
 ]

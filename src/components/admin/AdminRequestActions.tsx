@@ -25,7 +25,7 @@ export function AdminRequestActions({ requestId, isRead, comment }: { requestId:
       {comment && (
         <div className="relative">
           <button onClick={() => setShowComment(!showComment)}
-            className="p-1.5 text-white/30 hover:text-white rounded-lg hover:bg-white/5 transition-all">
+            className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 transition-all">
             <MessageSquare size={14} />
           </button>
           {showComment && (
@@ -39,7 +39,7 @@ export function AdminRequestActions({ requestId, isRead, comment }: { requestId:
         <button
           onClick={markRead}
           disabled={loading}
-          className="p-1.5 text-white/30 hover:text-emerald-400 rounded-lg hover:bg-emerald-500/10 transition-all"
+          className="p-1.5 text-gray-400 hover:text-emerald-600 rounded-lg hover:bg-emerald-50 transition-all"
           title="Отметить прочитанным"
         >
           <CheckCheck size={14} />

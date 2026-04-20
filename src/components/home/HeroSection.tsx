@@ -71,12 +71,14 @@ function ActivityToast() {
   )
 }
 
+// Per-car delivery days (10–15, non-repeating cycle)
+const DELIVERY_DAYS = [12, 14, 11, 15, 10, 13]
+
 interface HeroSectionProps {
   cars: Car[]
-  deliveryDays: number
 }
 
-export function HeroSection({ cars, deliveryDays }: HeroSectionProps) {
+export function HeroSection({ cars }: HeroSectionProps) {
   const [carIdx, setCarIdx] = useState(0)
   const [imgVisible, setImgVisible] = useState(true)
   // Duplicate for seamless marquee
@@ -203,7 +205,7 @@ export function HeroSection({ cars, deliveryDays }: HeroSectionProps) {
 
               {/* Delivery badge — outside image container, always on top */}
               <div className="absolute -top-4 -right-4 bg-brand-dark-2 border border-white/10 rounded-2xl px-4 py-3 shadow-lg z-20">
-                <div className="text-white font-black text-sm">{deliveryDays} дней</div>
+                <div className="text-white font-black text-sm">{DELIVERY_DAYS[carIdx % DELIVERY_DAYS.length]} дней</div>
                 <div className="text-white/35 text-xs">доставка</div>
               </div>
             </div>

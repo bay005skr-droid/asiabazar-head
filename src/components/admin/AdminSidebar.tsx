@@ -3,15 +3,13 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Car, LogOut, Menu, X, Globe, BarChart2, MessageSquare, Star, TrendingUp } from 'lucide-react'
+import { LayoutDashboard, Car, LogOut, Menu, X, Globe, BarChart2, MessageSquare } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const nav = [
   { href: '/admin', label: 'Дашборд', icon: LayoutDashboard, exact: true },
   { href: '/admin/cars', label: 'Автомобили', icon: Car },
   { href: '/admin/requests', label: 'Заявки', icon: MessageSquare },
-  { href: '/admin/reviews', label: 'Отзывы', icon: Star },
-  { href: '/admin/stats', label: 'Статистика', icon: TrendingUp },
   { href: '/admin/analytics', label: 'Аналитика', icon: BarChart2 },
 ]
 

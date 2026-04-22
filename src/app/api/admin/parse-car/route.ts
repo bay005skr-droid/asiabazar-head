@@ -70,6 +70,8 @@ function parseEncarJson(d: any, carid: string): Record<string, string | number> 
   const result: Record<string, string | number> = {}
   if (!d) return result
 
+  console.log(`[parse-car] parseEncarJson top-keys=${Object.keys(d).join(',')}`)
+
   const str = (x: unknown) => (x != null ? String(x) : '')
 
   // ── v1/readside/vehicle structure: { category, spec, performance, advertisement, photos } ──

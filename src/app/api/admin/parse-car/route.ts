@@ -23,11 +23,13 @@ const TRANS_MAP: Record<string, string> = {
 }
 const BRAND_MAP: Record<string, string> = {
   '현대': 'Hyundai', '기아': 'Kia', '제네시스': 'Genesis',
-  '쉐보레': 'Chevrolet', '르노': 'Renault', '쌍용': 'SsangYong',
-  'BMW': 'BMW', '벤츠': 'Mercedes-Benz', '아우디': 'Audi',
+  '쉐보레': 'Chevrolet', '르노코리아': 'Renault', '르노삼성': 'Renault', '르노': 'Renault', '쌍용': 'SsangYong', 'KG모빌리티': 'KG Mobility',
+  'BMW': 'BMW', '벤츠': 'Mercedes-Benz', '메르세데스': 'Mercedes-Benz', '아우디': 'Audi',
   '폭스바겐': 'Volkswagen', '볼보': 'Volvo', '렉서스': 'Lexus',
   '토요타': 'Toyota', '혼다': 'Honda', '닛산': 'Nissan',
-  '포르쉐': 'Porsche', '랜드로버': 'Land Rover',
+  '포르쉐': 'Porsche', '랜드로버': 'Land Rover', '재규어': 'Jaguar',
+  '링컨': 'Lincoln', '캐딜락': 'Cadillac', '지프': 'Jeep', '크라이슬러': 'Chrysler',
+  '미니': 'MINI', '푸조': 'Peugeot', '시트로엥': 'Citroen',
 }
 const MODEL_MAP: Record<string, string> = {
   '아반떼': 'Avante', '소나타': 'Sonata', '그랜저': 'Grandeur',
@@ -38,6 +40,10 @@ const MODEL_MAP: Record<string, string> = {
   'EV6': 'EV6', 'EV9': 'EV9', 'EV3': 'EV3',
   'GV70': 'GV70', 'GV80': 'GV80', 'G80': 'G80', 'G90': 'G90', 'GV60': 'GV60',
   '티볼리': 'Tivoli', '렉스턴': 'Rexton', '코란도': 'Korando', '모하비': 'Mohave',
+  'SM6': 'SM6', 'SM5': 'SM5', 'SM3': 'SM3', 'QM6': 'QM6', 'QM3': 'QM3', 'QM5': 'QM5',
+  '말리부': 'Malibu', '트레일블레이저': 'Trailblazer', '트랙스': 'Trax', '이쿼녹스': 'Equinox',
+  '아이오닉5': 'Ioniq 5', '아이오닉6': 'Ioniq 6',
+  'GV70': 'GV70', 'GV80': 'GV80', 'G80': 'G80', 'G90': 'G90', 'GV60': 'GV60', 'G70': 'G70',
 }
 
 function map(v: string, m: Record<string, string>) {
@@ -64,11 +70,79 @@ function parseEncarJson(d: any, carid: string): Record<string, string | number> 
   const result: Record<string, string | number> = {}
   if (!d) return result
 
-  // encar search API response: { SearchResults: [{ Vehicle: {...} }] }
+  const str = (x: unknown) => (x != null ? String(x) : '')
+
+  // ── v1/readside/vehicle structure: { category, spec, performance, advertisement, photos } ──
+  if (d.category) {
+    const cat = d.category
+    const spec = d.spec ?? {}
+    const perf = d.performance ?? {}
+    const advert = d.advertisement ?? d.price ?? {}
+
+    const mfr = str(cat.manufacturerName ?? '')
+    if (mfr) result.brand = map(mfr, BRAND_MAP)
+
+    const mdl = str(cat.modelName ?? '')
+    if (mdl) result.model = map(mdl, MODEL_MAP)
+
+    const badge = str(cat.gradeName ?? cat.gradeEnglishName ?? '')
+
+    const yr = parseInt(str(cat.formYear ?? cat.yearMonth?.slice(0, 4) ?? ''))
+    if (yr) result.year = yr
+
+    const km = parseInt(str(spec.mileage ?? perf.mileage ?? '').replace(/,/g, ''))
+    if (km) result.mileage = km
+
+    const fuel = str(spec.fuelName ?? spec.fuel ?? cat.fuelName ?? '')
+    if (fuel) result.engineType = map(fuel, FUEL_MAP)
+
+    const cc = parseInt(str(spec.displacement ?? spec.engineDisplacement ?? '').replace(/,/g, ''))
+    if (cc) result.engineVolume = `${cc} см³`
+
+    const gear = str(spec.transmissionName ?? spec.transmission ?? '')
+    if (gear) result.transmission = map(gear, TRANS_MAP)
+
+    const hp = parseInt(str(spec.maximumPower ?? spec.enginePower ?? perf.maximumPower ?? ''))
+    if (hp) result.horsepower = hp
+
+    if (result.brand || result.model) {
+      result.title = [result.brand, result.model, badge, yr || ''].filter(Boolean).join(' ').trim()
+    }
+
+    const rawPrice = parseInt(str(advert.price ?? advert.totalPrice ?? '').replace(/,/g, ''))
+    if (rawPrice) result._priceKRW = rawPrice > 100000 ? rawPrice : rawPrice * 10000
+
+    // Photos — v1 API: photos array or photo.list
+    const photos: string[] = []
+    const photoArr = d.photos ?? d.photo
+    if (Array.isArray(photoArr) && photoArr.length) {
+      photoArr.slice(0, 20).forEach((p: { path?: string; imagePath?: string; url?: string }) => {
+        const u = p.url ?? p.imagePath ?? p.path ?? ''
+        if (u) photos.push(u.startsWith('http') ? u : `https://ci.encar.com${u}`)
+      })
+    } else if (photoArr && typeof photoArr === 'object') {
+      const path = str(photoArr.path ?? photoArr.Path ?? '')
+      const list: string[] = Array.isArray(photoArr.list) ? photoArr.list : []
+      if (list.length) {
+        list.slice(0, 20).forEach((p: string) => {
+          photos.push(p.startsWith('http') ? p : `https://ci.encar.com${path}/${p}`)
+        })
+      } else if (path) {
+        for (let i = 1; i <= 12; i++) photos.push(`https://ci.encar.com${path}/${String(i).padStart(3,'0')}.jpg`)
+      }
+    }
+    if (!photos.length && carid) {
+      for (let i = 1; i <= 10; i++) photos.push(`https://ci.encar.com/carpicture${carid}/${String(i).padStart(3,'0')}.jpg`)
+    }
+    if (photos.length) result._images = photos.join('|||')
+
+    console.log(`[parse-car] v1 parsed: brand=${result.brand} model=${result.model} year=${result.year} km=${result.mileage} fuel=${result.engineType} gear=${result.transmission} photos=${photos.length}`)
+    return result
+  }
+
+  // ── encar search API: { SearchResults: [{ Vehicle: {...} }] } ──
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const v: any = d?.SearchResults?.[0]?.Vehicle ?? d?.Vehicle ?? d?.vehicle ?? d?.car ?? d
-
-  const str = (x: unknown) => (x != null ? String(x) : '')
 
   const mfr = str(v?.Manufacturer ?? v?.maker ?? v?.brand ?? '')
   if (mfr) result.brand = map(mfr, BRAND_MAP)
@@ -118,7 +192,6 @@ function parseEncarJson(d: any, carid: string): Record<string, string | number> 
     }
   }
 
-  // Standard CDN fallback
   if (!photos.length && carid) {
     for (let i = 1; i <= 10; i++) photos.push(`https://ci.encar.com/carpicture${carid}/${String(i).padStart(3,'0')}.jpg`)
   }

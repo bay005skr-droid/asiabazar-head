@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Save, Loader2, X, Upload, GripVertical, Star, ImageOff, Link2, CheckCircle, AlertCircle } from 'lucide-react'
+import { Save, Loader2, X, Upload, GripVertical, Star, ImageOff, Link2, CheckCircle, AlertCircle, Sparkles } from 'lucide-react'
 import { Car } from '@/types'
 
 const TRANSMISSIONS = ['АКПП', 'МКПП', 'Вариатор', 'Робот (DSG)', 'Типтроник']
@@ -121,6 +121,9 @@ export function CarForm({ car, mode }: CarFormProps) {
   const [importing, setImporting] = useState(false)
   const [importResult, setImportResult] = useState<{ ok: boolean; msg: string } | null>(null)
 
+  const [generatingDesc, setGeneratingDesc] = useState(false)
+  const [descError, setDescError] = useState('')
+
   const [allPhotos, setAllPhotos] = useState<string[]>(() => {
     if (!car) return []
     const main = car.mainImage ? [car.mainImage] : []
@@ -138,6 +141,7 @@ export function CarForm({ car, mode }: CarFormProps) {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -258,6 +262,39 @@ export function CarForm({ car, mode }: CarFormProps) {
       setImportResult({ ok: false, msg: 'Не удалось подключиться к сайту' })
     } finally {
       setImporting(false)
+    }
+  }
+
+  const handleGenerateDescription = async () => {
+    setGeneratingDesc(true)
+    setDescError('')
+    const vals = getValues()
+    try {
+      const res = await fetch('/api/admin/generate-description', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brand: vals.brand,
+          model: vals.model,
+          year: vals.year,
+          engineType: vals.engineType,
+          engineVolume: vals.engineVolume,
+          horsepower: vals.horsepower,
+          transmission: vals.transmission,
+          drive: vals.drive,
+          bodyType: vals.bodyType,
+          mileage: vals.mileage,
+          configuration: vals.configuration,
+          price: vals.price,
+        }),
+      })
+      const json = await res.json()
+      if (!res.ok || json.error) { setDescError(json.error || 'Ошибка'); return }
+      setValue('fullDescription', json.description, { shouldValidate: true })
+    } catch {
+      setDescError('Не удалось подключиться')
+    } finally {
+      setGeneratingDesc(false)
     }
   }
 
@@ -401,7 +438,28 @@ export function CarForm({ car, mode }: CarFormProps) {
 
       {/* ── Описание ── */}
       <div className="admin-card p-6 space-y-4">
-        <h2 className="text-white font-bold border-b border-white/5 pb-3">Описание</h2>
+        <div className="flex items-center justify-between border-b border-white/5 pb-3">
+          <h2 className="text-white font-bold">Описание</h2>
+          <button
+            type="button"
+            onClick={handleGenerateDescription}
+            disabled={generatingDesc}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold
+              bg-violet-500/15 border border-violet-500/25 text-violet-300
+              hover:bg-violet-500/25 hover:border-violet-500/40
+              disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            {generatingDesc
+              ? <Loader2 size={13} className="animate-spin" />
+              : <Sparkles size={13} />}
+            {generatingDesc ? 'Генерирую...' : 'Сгенерировать AI'}
+          </button>
+        </div>
+        {descError && (
+          <p className="text-red-400 text-xs flex items-center gap-1.5">
+            <AlertCircle size={12} /> {descError}
+          </p>
+        )}
         <F label="Описание *" error={errors.fullDescription?.message} hint="Первые 8 слов автоматически используются в карточке">
           <textarea
             {...register('fullDescription')}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -139,6 +139,7 @@ export function CarForm({ car, mode }: CarFormProps) {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -154,6 +155,14 @@ export function CarForm({ car, mode }: CarFormProps) {
         }
       : { category: 'standard', status: 'active', year: new Date().getFullYear(), seats: 5 },
   })
+
+  const watchedPrice = watch('price')
+  useEffect(() => {
+    const p = Number(watchedPrice)
+    if (!p) return
+    const cat = p < 1_500_000 ? 'standard' : p < 2_000_000 ? 'comfort' : p < 4_000_000 ? 'business' : 'premium'
+    setValue('category', cat as FormData['category'], { shouldValidate: false })
+  }, [watchedPrice, setValue])
 
   const onSubmit = async (data: FormData) => {
     if (allPhotos.length === 0) { setPhotoError('Добавьте хотя бы одно фото'); return }

@@ -19,11 +19,11 @@ const CATEGORIES: {
   subdesc?: string
   gradient: string
 }[] = [
-  { value: null,       label: 'Все авто',  price: '',          desc: 'Полный каталог',      subdesc: 'Ежедневно новые', gradient: 'from-gray-900 to-gray-700' },
-  { value: 'standard', label: 'Стандарт',  price: 'до 2 млн',  desc: 'Надёжный выбор',      gradient: 'from-slate-700 to-slate-500' },
-  { value: 'comfort',  label: 'Комфорт',   price: '2–3.5 млн', desc: 'Оптимальное качество', gradient: 'from-blue-700 to-blue-500' },
-  { value: 'business', label: 'Бизнес',    price: '3.5–6 млн', desc: 'Престиж и функции',    gradient: 'from-violet-700 to-violet-500' },
-  { value: 'premium',  label: 'Премиум',   price: 'от 6 млн',  desc: 'Лучшее из лучших',     gradient: 'from-brand-red to-rose-500' },
+  { value: null,       label: 'Все авто',  price: '',           desc: 'Полный каталог',      subdesc: 'Ежедневно новые', gradient: 'from-gray-900 to-gray-700' },
+  { value: 'standard', label: 'Стандарт',  price: 'до 1.5 млн', desc: 'Надёжный выбор',      gradient: 'from-slate-700 to-slate-500' },
+  { value: 'comfort',  label: 'Комфорт',   price: '1.5–2 млн',  desc: 'Оптимальное качество', gradient: 'from-blue-700 to-blue-500' },
+  { value: 'business', label: 'Бизнес',    price: '2–4 млн',    desc: 'Престиж и функции',    gradient: 'from-violet-700 to-violet-500' },
+  { value: 'premium',  label: 'Премиум',   price: 'от 4 млн',   desc: 'Лучшее из лучших',     gradient: 'from-brand-red to-rose-500' },
 ]
 
 export function CatalogPreviewSection({ cars }: CatalogPreviewProps) {

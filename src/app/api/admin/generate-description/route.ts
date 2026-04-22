@@ -5,8 +5,8 @@ export async function POST(request: NextRequest) {
   const auth = await getAdminSession()
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) return NextResponse.json({ error: 'ANTHROPIC_API_KEY не настроен' }, { status: 500 })
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) return NextResponse.json({ error: 'OPENAI_API_KEY не настроен' }, { status: 500 })
 
   const body = await request.json().catch(() => ({}))
   const { brand, model, year, engineType, engineVolume, horsepower, transmission, drive, bodyType, mileage, configuration, price } = body
@@ -39,15 +39,14 @@ ${carInfo}
 - Объём: 150-220 слов`
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'gpt-4o-mini',
         max_tokens: 600,
         messages: [{ role: 'user', content: prompt }],
       }),
@@ -55,12 +54,12 @@ ${carInfo}
 
     if (!res.ok) {
       const err = await res.text()
-      console.error('[generate-description] Claude error:', err)
+      console.error('[generate-description] OpenAI error:', err)
       return NextResponse.json({ error: 'Ошибка генерации' }, { status: 500 })
     }
 
     const data = await res.json()
-    const text = data?.content?.[0]?.text ?? ''
+    const text = data?.choices?.[0]?.message?.content ?? ''
     return NextResponse.json({ description: text.trim() })
   } catch (e) {
     console.error('[generate-description]', e)

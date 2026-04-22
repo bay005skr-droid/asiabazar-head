@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Save, Loader2, X, Upload, GripVertical, Star, ImageOff } from 'lucide-react'
+import { Save, Loader2, X, Upload, GripVertical, Star, ImageOff, Link2, CheckCircle, AlertCircle } from 'lucide-react'
 import { Car } from '@/types'
 
 const TRANSMISSIONS = ['АКПП', 'МКПП', 'Вариатор', 'Робот (DSG)', 'Типтроник']
@@ -117,6 +117,10 @@ function PhotoThumb({
 export function CarForm({ car, mode }: CarFormProps) {
   const router = useRouter()
 
+  const [importUrl, setImportUrl] = useState('')
+  const [importing, setImporting] = useState(false)
+  const [importResult, setImportResult] = useState<{ ok: boolean; msg: string } | null>(null)
+
   const [allPhotos, setAllPhotos] = useState<string[]>(() => {
     if (!car) return []
     const main = car.mainImage ? [car.mainImage] : []
@@ -133,6 +137,7 @@ export function CarForm({ car, mode }: CarFormProps) {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -206,6 +211,56 @@ export function CarForm({ car, mode }: CarFormProps) {
   }
   const handleDragEnd = () => setDragIdx(null)
 
+  const handleImport = async () => {
+    if (!importUrl.trim()) return
+    setImporting(true)
+    setImportResult(null)
+    try {
+      const res = await fetch('/api/admin/parse-car', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: importUrl.trim() }),
+      })
+      const json = await res.json()
+      if (!res.ok || json.error) {
+        setImportResult({ ok: false, msg: json.error || 'Ошибка парсинга' })
+        return
+      }
+      const d = json.data
+      let filled = 0
+      const setField = (key: keyof FormData, val: string | number | undefined) => {
+        if (val !== undefined && val !== '' && val !== 0) {
+          setValue(key, val as never, { shouldValidate: false })
+          filled++
+        }
+      }
+      setField('brand', d.brand)
+      setField('model', d.model)
+      setField('title', d.title)
+      setField('year', d.year)
+      setField('mileage', d.mileage)
+      setField('engineType', d.engineType)
+      setField('engineVolume', d.engineVolume)
+      setField('transmission', d.transmission)
+      setField('drive', d.drive)
+      setField('horsepower', d.horsepower)
+
+      // Photos from import
+      if (d._images) {
+        const imgs = (d._images as string).split('|||').filter(Boolean)
+        if (imgs.length > 0) setAllPhotos((p) => [...p, ...imgs])
+        filled++
+      }
+
+      const priceNote = d._priceKRW ? ` (цена в Корее: ${Number(d._priceKRW).toLocaleString('ru-RU')} ₩ — установите цену в рублях вручную)` : ''
+      setImportResult({ ok: true, msg: `Заполнено ${filled} полей.${priceNote}` })
+    } catch {
+      setImportResult({ ok: false, msg: 'Не удалось подключиться к сайту' })
+    } finally {
+      setImporting(false)
+    }
+  }
+
   // Field wrapper
   const F = ({ label, error, hint, children }: { label: string; error?: string; hint?: string; children: React.ReactNode }) => (
     <div>
@@ -218,6 +273,46 @@ export function CarForm({ car, mode }: CarFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
+      {/* ── Импорт по ссылке ── */}
+      <div className="admin-card p-6 space-y-3">
+        <div className="flex items-center gap-2 mb-1">
+          <Link2 size={16} className="text-brand-red" />
+          <h2 className="text-white font-bold">Импорт с сайта</h2>
+          <span className="text-white/30 text-xs font-normal">encar.com и другие</span>
+        </div>
+        <p className="text-white/30 text-xs">Вставьте ссылку на автомобиль — поля заполнятся автоматически. Цену в рублях укажите вручную.</p>
+        <div className="flex gap-2">
+          <input
+            type="url"
+            value={importUrl}
+            onChange={(e) => setImportUrl(e.target.value)}
+            placeholder="https://www.encar.com/dc/dc_cardetailview.do?carid=..."
+            className="admin-input flex-1"
+          />
+          <button
+            type="button"
+            onClick={handleImport}
+            disabled={importing || !importUrl.trim()}
+            className="btn-primary px-5 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {importing ? <Loader2 size={16} className="animate-spin" /> : <Link2 size={16} />}
+            {importing ? 'Загрузка...' : 'Импорт'}
+          </button>
+        </div>
+        {importResult && (
+          <div className={`flex items-start gap-2 text-sm rounded-xl px-4 py-3 ${
+            importResult.ok
+              ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-300'
+              : 'bg-red-500/10 border border-red-500/20 text-red-300'
+          }`}>
+            {importResult.ok
+              ? <CheckCircle size={16} className="flex-shrink-0 mt-0.5" />
+              : <AlertCircle size={16} className="flex-shrink-0 mt-0.5" />}
+            {importResult.msg}
+          </div>
+        )}
+      </div>
 
       {/* ── Основная информация ── */}
       <div className="admin-card p-6 space-y-4">

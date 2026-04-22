@@ -55,8 +55,8 @@ function extractCarId(url: string): string | null {
 async function tryFetch(url: string, headers = BASE_HEADERS) {
   try {
     const r = await fetch(url, { headers, signal: AbortSignal.timeout(10000) })
-    return r.ok ? r : null
-  } catch { return null }
+    return r
+  } catch (e) { console.log(`[parse-car] fetch error: ${e}`); return null }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -175,6 +175,8 @@ export async function POST(request: NextRequest) {
   if (!carid) return NextResponse.json({ error: 'Не удалось определить ID автомобиля из ссылки' }, { status: 400 })
 
   try {
+    console.log(`[parse-car] carid=${carid}`)
+
     // 1. Try encar search/list API (returns rich JSON)
     const apiUrls = [
       `https://api.encar.com/search/car/list/general?count=1&q=(And.Hidden.N._.CarNo.${carid}.)&sr=%7CModifiedDate%7C0%7C1`,
@@ -183,29 +185,39 @@ export async function POST(request: NextRequest) {
     ]
 
     for (const apiUrl of apiUrls) {
+      console.log(`[parse-car] trying API: ${apiUrl}`)
       const res = await tryFetch(apiUrl, {
         ...BASE_HEADERS,
         'Accept': 'application/json',
       })
-      if (res) {
-        const json = await res.json().catch(() => null)
-        if (json) {
-          const result = parseEncarJson(json, carid)
-          if (Object.keys(result).length > 2) {
-            return NextResponse.json({ data: result })
-          }
+      if (!res) { console.log(`[parse-car] no response`); continue }
+      console.log(`[parse-car] status=${res.status}`)
+      const text = await res.text()
+      console.log(`[parse-car] body(500)=${text.slice(0, 500)}`)
+      let json = null
+      try { json = JSON.parse(text) } catch { console.log(`[parse-car] JSON parse failed`) }
+      if (json) {
+        const result = parseEncarJson(json, carid)
+        console.log(`[parse-car] parsed keys=${Object.keys(result).join(',')}`)
+        if (Object.keys(result).length > 2) {
+          return NextResponse.json({ data: result })
         }
       }
     }
 
     // 2. Try desktop HTML
-    const htmlRes = await tryFetch(`https://www.encar.com/dc/dc_cardetailview.do?carid=${carid}`)
+    const htmlUrl = `https://www.encar.com/dc/dc_cardetailview.do?carid=${carid}`
+    console.log(`[parse-car] trying HTML: ${htmlUrl}`)
+    const htmlRes = await tryFetch(htmlUrl)
     if (htmlRes) {
+      console.log(`[parse-car] HTML status=${htmlRes.status}`)
       const html = await htmlRes.text()
+      console.log(`[parse-car] HTML length=${html.length}, head(300)=${html.slice(0, 300)}`)
       // Try embedded JSON in desktop page
       const jsonStr = html.match(/var\s+inspectionInfo\s*=\s*(\{[\s\S]{10,2000}?\});/)
         ?? html.match(/dataLayer\.push\((\{[\s\S]{10,1000}?\})\)/)
       if (jsonStr) {
+        console.log(`[parse-car] found embedded JSON`)
         try {
           const d = JSON.parse(jsonStr[1])
           const result = parseEncarJson(d, carid)
@@ -213,10 +225,12 @@ export async function POST(request: NextRequest) {
         } catch { /* fall through */ }
       }
       const result = parseHtml(html, carid)
+      console.log(`[parse-car] HTML parse keys=${Object.keys(result).join(',')}`)
       return NextResponse.json({ data: result })
     }
 
     // 3. Last resort — just return CDN photos + empty fields
+    console.log(`[parse-car] fallback CDN photos`)
     const photos: string[] = []
     for (let i = 1; i <= 10; i++) photos.push(`https://ci.encar.com/carpicture${carid}/${String(i).padStart(3,'0')}.jpg`)
     return NextResponse.json({ data: { _images: photos.join('|||') } })

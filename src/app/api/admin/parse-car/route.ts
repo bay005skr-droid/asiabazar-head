@@ -38,12 +38,11 @@ const MODEL_MAP: Record<string, string> = {
   '스포티지': 'Sportage', 'K3': 'K3', 'K5': 'K5', 'K8': 'K8', 'K9': 'K9',
   '셀토스': 'Seltos', '쏘렌토': 'Sorento', '카니발': 'Carnival',
   'EV6': 'EV6', 'EV9': 'EV9', 'EV3': 'EV3',
-  'GV70': 'GV70', 'GV80': 'GV80', 'G80': 'G80', 'G90': 'G90', 'GV60': 'GV60',
+  'GV70': 'GV70', 'GV80': 'GV80', 'G80': 'G80', 'G90': 'G90', 'GV60': 'GV60', 'G70': 'G70',
   '티볼리': 'Tivoli', '렉스턴': 'Rexton', '코란도': 'Korando', '모하비': 'Mohave',
   'SM6': 'SM6', 'SM5': 'SM5', 'SM3': 'SM3', 'QM6': 'QM6', 'QM3': 'QM3', 'QM5': 'QM5',
   '말리부': 'Malibu', '트레일블레이저': 'Trailblazer', '트랙스': 'Trax', '이쿼녹스': 'Equinox',
   '아이오닉5': 'Ioniq 5', '아이오닉6': 'Ioniq 6',
-  'GV70': 'GV70', 'GV80': 'GV80', 'G80': 'G80', 'G90': 'G90', 'GV60': 'GV60', 'G70': 'G70',
 }
 
 function map(v: string, m: Record<string, string>) {

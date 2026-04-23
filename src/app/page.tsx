@@ -13,7 +13,7 @@ import { parseCar } from '@/lib/utils'
 export const revalidate = 60
 
 export default async function HomePage() {
-  const carsRaw = await prisma.car.findMany({ where: { status: 'active' }, orderBy: { createdAt: 'desc' }, take: 12 })
+  const carsRaw = await prisma.car.findMany({ where: { status: 'active' }, orderBy: { createdAt: 'desc' } })
   const cars = carsRaw.map(parseCar)
 
   // Cars for the slideshow in ArticlePromoSection (with price + title)

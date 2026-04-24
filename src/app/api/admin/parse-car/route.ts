@@ -1,5 +1,47 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getAdminSession } from '@/lib/auth'
+
+function getR2Client() {
+  if (!process.env.CF_ACCOUNT_ID || !process.env.CF_R2_ACCESS_KEY_ID) return null
+  return new S3Client({
+    region: 'auto',
+    endpoint: `https://${process.env.CF_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    credentials: {
+      accessKeyId: process.env.CF_R2_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.CF_R2_SECRET_ACCESS_KEY!,
+    },
+  })
+}
+
+async function mirrorToR2(urls: string[]): Promise<string[]> {
+  const r2 = getR2Client()
+  if (!r2 || !process.env.CF_R2_BUCKET_NAME || !process.env.CF_R2_PUBLIC_URL) return urls
+
+  const results = await Promise.allSettled(
+    urls.slice(0, 15).map(async (url) => {
+      try {
+        const res = await fetch(url, { signal: AbortSignal.timeout(8000) })
+        if (!res.ok) return url
+        const buffer = Buffer.from(await res.arrayBuffer())
+        const ext = url.match(/\.(jpg|jpeg|png|webp)/i)?.[1] ?? 'jpg'
+        const key = `cars/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+        await r2.send(new PutObjectCommand({
+          Bucket: process.env.CF_R2_BUCKET_NAME!,
+          Key: key,
+          Body: buffer,
+          ContentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
+          CacheControl: 'public, max-age=31536000',
+        }))
+        return `${process.env.CF_R2_PUBLIC_URL}/${key}`
+      } catch {
+        return url // fallback to original if upload fails
+      }
+    })
+  )
+
+  return results.map((r, i) => r.status === 'fulfilled' ? r.value : urls[i])
+}
 
 const BASE_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -274,6 +316,7 @@ export async function POST(request: NextRequest) {
         const result = parseEncarJson(json, carid)
         console.log(`[parse-car] parsed keys=${Object.keys(result).join(',')}`)
         if (Object.keys(result).length > 2) {
+          result._images = (await mirrorToR2((result._images as string ?? '').split('|||').filter(Boolean))).join('|||')
           return NextResponse.json({ data: result })
         }
       }
@@ -287,7 +330,6 @@ export async function POST(request: NextRequest) {
       console.log(`[parse-car] HTML status=${htmlRes.status}`)
       const html = await htmlRes.text()
       console.log(`[parse-car] HTML length=${html.length}, head(300)=${html.slice(0, 300)}`)
-      // Try embedded JSON in desktop page
       const jsonStr = html.match(/var\s+inspectionInfo\s*=\s*(\{[\s\S]{10,2000}?\});/)
         ?? html.match(/dataLayer\.push\((\{[\s\S]{10,1000}?\})\)/)
       if (jsonStr) {
@@ -295,19 +337,24 @@ export async function POST(request: NextRequest) {
         try {
           const d = JSON.parse(jsonStr[1])
           const result = parseEncarJson(d, carid)
-          if (Object.keys(result).length > 1) return NextResponse.json({ data: result })
+          if (Object.keys(result).length > 1) {
+            result._images = (await mirrorToR2((result._images as string ?? '').split('|||').filter(Boolean))).join('|||')
+            return NextResponse.json({ data: result })
+          }
         } catch { /* fall through */ }
       }
       const result = parseHtml(html, carid)
       console.log(`[parse-car] HTML parse keys=${Object.keys(result).join(',')}`)
+      result._images = (await mirrorToR2((result._images as string ?? '').split('|||').filter(Boolean))).join('|||')
       return NextResponse.json({ data: result })
     }
 
-    // 3. Last resort — just return CDN photos + empty fields
+    // 3. Last resort — CDN photos mirrored to R2
     console.log(`[parse-car] fallback CDN photos`)
     const photos: string[] = []
     for (let i = 1; i <= 10; i++) photos.push(`https://ci.encar.com/carpicture${carid}/${String(i).padStart(3,'0')}.jpg`)
-    return NextResponse.json({ data: { _images: photos.join('|||') } })
+    const mirrored = await mirrorToR2(photos)
+    return NextResponse.json({ data: { _images: mirrored.join('|||') } })
 
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Неизвестная ошибка'

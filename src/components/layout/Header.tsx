@@ -79,9 +79,9 @@ export function Header() {
               <img src="/logo.webp" alt="AZIA BAZAR" className="h-9 w-auto" />
               <span
                 className="text-gray-900 group-hover:text-brand-red transition-colors tracking-widest uppercase leading-none"
-                style={{ fontFamily: "'Futura PT', 'Century Gothic', sans-serif", fontWeight: 600, fontSize: '1.05rem' }}
+                style={{ fontFamily: "'Futura PT', 'Century Gothic', sans-serif", fontWeight: 200, fontSize: '1.55rem' }}
               >
-                AZIA<br />BAZAR
+                AZIA BAZAR
               </span>
             </Link>
 

@@ -25,13 +25,8 @@ export function Footer() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-brand-red flex items-center justify-center shadow-red flex-shrink-0">
-              <span className="text-white font-black text-sm">АБ</span>
-            </div>
-            <div>
-              <span className="text-white font-bold text-lg">АзияБазар</span>
-              <p className="text-gray-500 text-xs mt-0.5">Автомобили из Южной Кореи под заказ</p>
-            </div>
+            <img src="/logo.webp" alt="АзияБазар" className="h-8 w-auto brightness-0 invert" />
+            <p className="text-gray-500 text-xs">Автомобили из Южной Кореи под заказ</p>
           </div>
 
           {/* Messengers — same style as header */}

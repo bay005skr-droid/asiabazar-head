@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/futura-pt');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -20,6 +22,12 @@
   body {
     @apply bg-white text-gray-900 antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Futura PT', 'Futura', 'Century Gothic', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.02em;
   }
 
   ::selection {

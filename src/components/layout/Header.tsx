@@ -75,13 +75,12 @@ export function Header() {
           <div className="flex items-center justify-between h-16">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
-              <div className="w-8 h-8 rounded-lg bg-brand-red flex items-center justify-center shadow-red">
-                <span className="text-white font-black text-sm">АБ</span>
-              </div>
-              <span className="text-gray-900 font-bold text-xl tracking-tight group-hover:text-brand-red transition-colors">
-                АзияБазар
-              </span>
+            <Link href="/" className="flex items-center flex-shrink-0">
+              <img
+                src="/logo.webp"
+                alt="АзияБазар"
+                className="h-9 w-auto"
+              />
             </Link>
 
             {/* Desktop Nav */}

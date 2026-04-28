@@ -75,13 +75,13 @@ export function Header() {
           <div className="flex items-center justify-between h-16">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
-              <img src="/logo.webp" alt="АзияБазар" className="h-9 w-auto" />
+            <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
+              <img src="/logo.webp" alt="AZIA BAZAR" className="h-9 w-auto" />
               <span
-                className="text-gray-900 group-hover:text-brand-red transition-colors tracking-widest uppercase text-sm"
-                style={{ fontFamily: "'Futura PT', 'Century Gothic', sans-serif", fontWeight: 300 }}
+                className="text-gray-900 group-hover:text-brand-red transition-colors tracking-widest uppercase leading-none"
+                style={{ fontFamily: "'Futura PT', 'Century Gothic', sans-serif", fontWeight: 600, fontSize: '1.05rem' }}
               >
-                Азия Базар
+                AZIA<br />BAZAR
               </span>
             </Link>
 

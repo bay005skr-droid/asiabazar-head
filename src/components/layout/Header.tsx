@@ -75,12 +75,14 @@ export function Header() {
           <div className="flex items-center justify-between h-16">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center flex-shrink-0">
-              <img
-                src="/logo.webp"
-                alt="АзияБазар"
-                className="h-9 w-auto"
-              />
+            <Link href="/" className="flex items-center gap-3 flex-shrink-0 group">
+              <img src="/logo.webp" alt="АзияБазар" className="h-9 w-auto" />
+              <span
+                className="text-gray-900 group-hover:text-brand-red transition-colors tracking-widest uppercase text-sm"
+                style={{ fontFamily: "'Futura PT', 'Century Gothic', sans-serif", fontWeight: 300 }}
+              >
+                Азия Базар
+              </span>
             </Link>
 
             {/* Desktop Nav */}

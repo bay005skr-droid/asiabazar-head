@@ -25,7 +25,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <img src="/logo.webp" alt="АзияБазар" className="h-8 w-auto brightness-0 invert" />
+            <img src="/logo.webp" alt="АзияБазар" className="h-8 w-auto" />
             <p className="text-gray-500 text-xs">Автомобили из Южной Кореи под заказ</p>
           </div>
 

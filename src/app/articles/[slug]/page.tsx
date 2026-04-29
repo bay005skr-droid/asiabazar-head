@@ -3,6 +3,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Clock } from 'lucide-react'
 import { ContactSection } from '@/components/home/ContactSection'
+import { ArticleCoverImage } from '@/components/articles/ArticleCoverImage'
 import prisma from '@/lib/prisma'
 import { ArticleContent, ArticleBlock, TextBlock, StrategyBlock, HighlightBlock, SummaryBlock } from '@/types'
 
@@ -168,11 +169,7 @@ export default async function ArticlePage({ params }: Props) {
 
         {/* Cover */}
         <div className="relative rounded-2xl overflow-hidden aspect-[21/9] mb-8 shadow-card">
-          <img
-            src={article.coverImage}
-            alt={article.title}
-            className="w-full h-full object-cover"
-          />
+          <ArticleCoverImage src={article.coverImage} alt={article.title} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
         </div>
 

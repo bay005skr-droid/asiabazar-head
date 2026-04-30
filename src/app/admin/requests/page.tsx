@@ -1,4 +1,6 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
+import { Download } from 'lucide-react'
 import prisma from '@/lib/prisma'
 import { AdminRequestActions } from '@/components/admin/AdminRequestActions'
 
@@ -12,16 +14,26 @@ export default async function AdminRequestsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <div>
-          <h1 className="text-2xl font-black text-white">Заявки</h1>
-          <p className="text-white/40 text-sm mt-0.5">{requests.length} всего · {unread} непрочитанных</p>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div>
+            <h1 className="text-2xl font-black text-white">Заявки</h1>
+            <p className="text-white/40 text-sm mt-0.5">{requests.length} всего · {unread} непрочитанных</p>
+          </div>
+          {unread > 0 && (
+            <span className="px-3 py-1 rounded-full bg-brand-red/20 border border-brand-red/30 text-brand-red text-sm font-bold">
+              {unread} новых
+            </span>
+          )}
         </div>
-        {unread > 0 && (
-          <span className="px-3 py-1 rounded-full bg-brand-red/20 border border-brand-red/30 text-brand-red text-sm font-bold">
-            {unread} новых
-          </span>
-        )}
+        <Link
+          href="/api/admin/requests/export"
+          className="admin-btn-secondary text-xs px-3 py-2 flex items-center gap-1.5"
+          title="Скачать CSV (открывается в Google Таблицах и Excel)"
+        >
+          <Download size={13} />
+          Экспорт CSV
+        </Link>
       </div>
 
       <div className="admin-card overflow-hidden">

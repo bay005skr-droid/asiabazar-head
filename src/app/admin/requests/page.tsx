@@ -1,39 +1,71 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Download } from 'lucide-react'
+import { Suspense } from 'react'
 import prisma from '@/lib/prisma'
 import { AdminRequestActions } from '@/components/admin/AdminRequestActions'
+import { RequestsDateFilter } from '@/components/admin/RequestsDateFilter'
 
 export const metadata: Metadata = { title: 'Заявки' }
 
-export default async function AdminRequestsPage() {
-  const requests = await prisma.contactRequest.findMany({ orderBy: { createdAt: 'desc' } })
-  const unread = requests.filter((r) => !r.isRead).length
+interface Props { searchParams: { date?: string } }
 
+export default async function AdminRequestsPage({ searchParams }: Props) {
+  const date = searchParams.date
+
+  // Build date range filter if date selected
+  let where = {}
+  if (date) {
+    const from = new Date(date)
+    from.setHours(0, 0, 0, 0)
+    const to = new Date(date)
+    to.setHours(23, 59, 59, 999)
+    where = { createdAt: { gte: from, lte: to } }
+  }
+
+  const [all, requests] = await Promise.all([
+    prisma.contactRequest.count(),
+    prisma.contactRequest.findMany({ where, orderBy: { createdAt: 'desc' } }),
+  ])
+
+  const unread = requests.filter((r) => !r.isRead).length
   const messengerLabels: Record<string, string> = { telegram: 'TG', max: 'MAX', whatsapp: 'WA' }
+
+  // Export link with date filter applied
+  const exportHref = date
+    ? `/api/admin/requests/export?date=${date}`
+    : '/api/admin/requests/export'
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-3">
           <div>
             <h1 className="text-2xl font-black text-white">Заявки</h1>
-            <p className="text-white/40 text-sm mt-0.5">{requests.length} всего · {unread} непрочитанных</p>
+            <p className="text-white/40 text-sm mt-0.5">
+              {date ? `${requests.length} за день` : `${all} всего`}
+              {!date && unread > 0 && ` · ${unread} непрочитанных`}
+            </p>
           </div>
-          {unread > 0 && (
+          {!date && unread > 0 && (
             <span className="px-3 py-1 rounded-full bg-brand-red/20 border border-brand-red/30 text-brand-red text-sm font-bold">
               {unread} новых
             </span>
           )}
         </div>
-        <Link
-          href="/api/admin/requests/export"
-          className="admin-btn-secondary text-xs px-3 py-2 flex items-center gap-1.5"
-          title="Скачать CSV (открывается в Google Таблицах и Excel)"
-        >
-          <Download size={13} />
-          Экспорт CSV
-        </Link>
+        <div className="flex items-center gap-2">
+          <Suspense>
+            <RequestsDateFilter total={all} filtered={requests.length} />
+          </Suspense>
+          <Link
+            href={exportHref}
+            className="admin-btn-secondary text-xs px-3 py-2 flex items-center gap-1.5"
+            title="Скачать CSV (открывается в Google Таблицах и Excel)"
+          >
+            <Download size={13} />
+            Экспорт CSV
+          </Link>
+        </div>
       </div>
 
       <div className="admin-card overflow-hidden">
@@ -74,6 +106,9 @@ export default async function AdminRequestsPage() {
                   </td>
                   <td className="px-4 py-3 text-white/30 text-xs">
                     {new Date(r.createdAt).toLocaleDateString('ru-RU')}
+                    <div className="text-white/20">
+                      {new Date(r.createdAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-center">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
@@ -92,7 +127,9 @@ export default async function AdminRequestsPage() {
             </tbody>
           </table>
           {requests.length === 0 && (
-            <div className="text-center py-12 text-white/30">Заявок пока нет</div>
+            <div className="text-center py-12 text-white/30">
+              {date ? 'За этот день заявок нет' : 'Заявок пока нет'}
+            </div>
           )}
         </div>
       </div>

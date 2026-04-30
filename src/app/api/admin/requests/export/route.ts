@@ -2,10 +2,20 @@ import { NextResponse } from 'next/server'
 import { getAdminSession } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 
-export async function GET() {
+export async function GET(req: Request) {
   if (!(await getAdminSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const requests = await prisma.contactRequest.findMany({ orderBy: { createdAt: 'desc' } })
+  const { searchParams } = new URL(req.url)
+  const date = searchParams.get('date')
+
+  let where = {}
+  if (date) {
+    const from = new Date(date); from.setHours(0, 0, 0, 0)
+    const to = new Date(date);   to.setHours(23, 59, 59, 999)
+    where = { createdAt: { gte: from, lte: to } }
+  }
+
+  const requests = await prisma.contactRequest.findMany({ where, orderBy: { createdAt: 'desc' } })
 
   const messengerMap: Record<string, string> = { telegram: 'Telegram', whatsapp: 'WhatsApp', max: 'MAX' }
 

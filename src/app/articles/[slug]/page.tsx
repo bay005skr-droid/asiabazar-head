@@ -177,7 +177,7 @@ export default async function ArticlePage({ params }: Props) {
         <div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-gray-400">
           <span className="flex items-center gap-1.5">
             <Clock size={14} />
-            {new Date(article.publishedAt).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
+            {new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}
           </span>
           <span className="px-2.5 py-0.5 rounded-full bg-red-50 border border-red-100 text-brand-red text-xs font-medium">
             Полезное

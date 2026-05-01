@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -139,7 +139,6 @@ export function CarForm({ car, mode }: CarFormProps) {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -156,13 +155,12 @@ export function CarForm({ car, mode }: CarFormProps) {
       : { category: 'standard', status: 'active', year: new Date().getFullYear(), seats: 5 },
   })
 
-  const watchedPrice = watch('price')
-  useEffect(() => {
-    const p = Number(watchedPrice)
+  const autoCategory = (price: string) => {
+    const p = Number(price)
     if (!p) return
     const cat = p < 1_500_000 ? 'standard' : p < 2_000_000 ? 'comfort' : p < 4_000_000 ? 'business' : 'premium'
     setValue('category', cat as FormData['category'], { shouldValidate: false })
-  }, [watchedPrice, setValue])
+  }
 
   const onSubmit = async (data: FormData) => {
     if (allPhotos.length === 0) { setPhotoError('Добавьте хотя бы одно фото'); return }
@@ -343,7 +341,13 @@ export function CarForm({ car, mode }: CarFormProps) {
         </F>
         <div className="grid sm:grid-cols-3 gap-4">
           <F label="Цена (₽) *" error={errors.price?.message}>
-            <input {...register('price')} type="number" placeholder="2500000" className="admin-input" />
+            <input
+              {...register('price')}
+              type="number"
+              placeholder="2500000"
+              className="admin-input"
+              onBlur={(e) => autoCategory(e.target.value)}
+            />
           </F>
           <F label="Категория *">
             <select {...register('category')} className="admin-input">

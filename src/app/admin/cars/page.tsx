@@ -105,6 +105,9 @@ export default async function AdminCarsPage({ searchParams }: Props) {
                     <span className="text-white/30 text-xs font-mono">
                       {(car as Car & { addedBy?: string }).addedBy || '—'}
                     </span>
+                    <div className="text-white/20 text-xs mt-0.5">
+                      {new Date((car as Car & { createdAt?: string }).createdAt ?? '').toLocaleDateString('ru-RU')}
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-right font-bold text-white">
                     {formatPrice(car.price)}

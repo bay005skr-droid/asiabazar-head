@@ -78,7 +78,7 @@ export function ArticleAndChannelsSection() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
 
               {/* Описание — 2 строки */}
-              <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
+              <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
                 Свежие авто в наличии, актуальные цены из Кореи, разбор утильсбора и таможни — в наших каналах. Подписывайтесь, чтобы не пропустить выгодное предложение.
               </p>
 
@@ -108,7 +108,7 @@ export function ArticleAndChannelsSection() {
                     <img
                       src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg/1280px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg.png"
                       alt="MAX"
-                      className="w-5 h-auto object-contain block"
+                      className="w-4 h-auto object-contain block"
                     />
                   </span>
                   MAX

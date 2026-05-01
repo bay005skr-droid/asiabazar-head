@@ -279,13 +279,13 @@ export default function AnalyticsPage() {
 
           {/* Audience breakdown */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            <BreakdownCard icon={Globe}      title="Источники трафика" items={data.sources}  color="text-blue-400" />
-            <BreakdownCard icon={Monitor}    title="Браузеры"          items={data.browsers} color="text-emerald-400" />
-            <BreakdownCard icon={Cpu}        title="Операционная система" items={data.os}    color="text-violet-400" />
-            <BreakdownCard icon={Smartphone} title="Устройства"        items={data.devices}  color="text-amber-400" />
+            <BreakdownCard icon={Globe}      title="Источники трафика"    items={data.sources  ?? []} color="text-blue-400" />
+            <BreakdownCard icon={Monitor}    title="Браузеры"             items={data.browsers ?? []} color="text-emerald-400" />
+            <BreakdownCard icon={Cpu}        title="Операционная система" items={data.os       ?? []} color="text-violet-400" />
+            <BreakdownCard icon={Smartphone} title="Устройства"           items={data.devices  ?? []} color="text-amber-400" />
           </div>
 
-          {data.cities.length > 0 && (
+          {(data.cities ?? []).length > 0 && (
             <DarkCard className="p-5">
               <div className="flex items-center gap-2 mb-4">
                 <MapPin size={16} className="text-rose-400" />
@@ -293,7 +293,7 @@ export default function AnalyticsPage() {
                 <span className="text-white/25 text-xs ml-1">{periodLabel}</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
-                {data.cities.map((c) => (
+                {(data.cities ?? []).map((c) => (
                   <MiniBar key={c.label} label={c.label} value={c.count} max={data.cities[0]?.count || 1} />
                 ))}
               </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { BarChart2, Users, MessageSquare, Send, Car, TrendingUp, Eye } from 'lucide-react'
+import { BarChart2, Users, MessageSquare, Send, Car, TrendingUp, Eye, Globe, Monitor, Cpu, Smartphone, MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type Period = 'today' | '7d' | '30d' | '3m'
@@ -20,6 +20,8 @@ const PERIOD_LABEL: Record<Period, string> = {
   '3m': 'за 3 месяца',
 }
 
+interface LabelCount { label: string; count: number }
+
 interface AnalyticsData {
   period: Period
   sessions: { period: number; today: number }
@@ -29,6 +31,11 @@ interface AnalyticsData {
   carViews: { period: number; today: number }
   dailyChart: { date: string; count: number }[]
   topCars: { slug: string; title: string; views: number }[]
+  sources:  LabelCount[]
+  browsers: LabelCount[]
+  os:       LabelCount[]
+  devices:  LabelCount[]
+  cities:   LabelCount[]
 }
 
 function DarkCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
@@ -79,6 +86,37 @@ function MiniBar({ value, max, label }: { value: number; max: number; label: str
       </div>
       <div className="w-8 text-xs text-white/70 font-semibold">{value}</div>
     </div>
+  )
+}
+
+function BreakdownCard({
+  icon: Icon,
+  title,
+  items,
+  color = 'text-brand-red',
+}: {
+  icon: React.ElementType
+  title: string
+  items: LabelCount[]
+  color?: string
+}) {
+  const max = Math.max(...items.map((i) => i.count), 1)
+  return (
+    <DarkCard className="p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <Icon size={16} className={color} />
+        <span className="text-white/70 font-semibold text-sm">{title}</span>
+      </div>
+      {items.length === 0 ? (
+        <div className="text-white/25 text-xs py-2">Нет данных</div>
+      ) : (
+        <div className="space-y-3">
+          {items.map((item) => (
+            <MiniBar key={item.label} label={item.label} value={item.count} max={max} />
+          ))}
+        </div>
+      )}
+    </DarkCard>
   )
 }
 
@@ -235,6 +273,29 @@ export default function AnalyticsPage() {
                     </div>
                   )
                 })}
+              </div>
+            </DarkCard>
+          )}
+
+          {/* Audience breakdown */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <BreakdownCard icon={Globe}      title="Источники трафика" items={data.sources}  color="text-blue-400" />
+            <BreakdownCard icon={Monitor}    title="Браузеры"          items={data.browsers} color="text-emerald-400" />
+            <BreakdownCard icon={Cpu}        title="Операционная система" items={data.os}    color="text-violet-400" />
+            <BreakdownCard icon={Smartphone} title="Устройства"        items={data.devices}  color="text-amber-400" />
+          </div>
+
+          {data.cities.length > 0 && (
+            <DarkCard className="p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <MapPin size={16} className="text-rose-400" />
+                <span className="text-white/70 font-semibold text-sm">Топ городов</span>
+                <span className="text-white/25 text-xs ml-1">{periodLabel}</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                {data.cities.map((c) => (
+                  <MiniBar key={c.label} label={c.label} value={c.count} max={data.cities[0]?.count || 1} />
+                ))}
               </div>
             </DarkCard>
           )}

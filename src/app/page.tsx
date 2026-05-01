@@ -1,9 +1,8 @@
 import { HeroSection } from '@/components/home/HeroSection'
 import { ArticlePromoSection } from '@/components/home/ArticlePromoSection'
 import { CatalogPreviewSection } from '@/components/home/CatalogPreviewSection'
-import { FeaturedArticleSection } from '@/components/home/FeaturedArticleSection'
+import { ArticleAndChannelsSection } from '@/components/home/ArticleAndChannelsSection'
 import { HomeStatsSection } from '@/components/home/HomeStatsSection'
-import { SocialChannelsSection } from '@/components/home/SocialChannelsSection'
 import { HowWeWorkSection } from '@/components/home/HowWeWorkSection'
 import { ReviewsSection } from '@/components/home/ReviewsSection'
 import { FaqSection } from '@/components/home/FaqSection'
@@ -17,7 +16,6 @@ export default async function HomePage() {
   const carsRaw = await prisma.car.findMany({ where: { status: 'active' }, orderBy: { createdAt: 'desc' } })
   const cars = carsRaw.map(parseCar)
 
-  // Cars for the slideshow in ArticlePromoSection (with price + title)
   const articleCars = cars
     .filter((c) => c.mainImage)
     .slice(0, 8)
@@ -26,8 +24,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection cars={cars} />
-      <FeaturedArticleSection />
-      <SocialChannelsSection />
+      <ArticleAndChannelsSection />
       <CatalogPreviewSection cars={cars} />
       <HomeStatsSection />
       <ArticlePromoSection cars={articleCars} />

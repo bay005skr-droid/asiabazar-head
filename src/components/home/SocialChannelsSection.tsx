@@ -19,8 +19,8 @@ export function SocialChannelsSection() {
         <div className="bg-white rounded-2xl border border-gray-100 shadow-card px-6 py-6">
 
           <div className="flex items-center justify-between gap-6 flex-wrap">
-            <p className="text-gray-500 text-sm whitespace-nowrap">
-              Актуальные авто, цены из Кореи и советы по выбору — в наших каналах.
+            <p className="text-gray-500 text-sm">
+              Свежие авто в наличии, актуальные цены из Кореи, разбор утильсбора и таможни, реальные отзывы клиентов — всё это в наших каналах. Подписывайтесь, чтобы не пропустить выгодное предложение.
             </p>
 
             <div className="flex items-center gap-3">

@@ -8,7 +8,7 @@ const TelegramIcon = () => (
 
 export function SocialChannelsSection() {
   return (
-    <section className="py-10 bg-gray-50 border-b border-gray-100">
+    <section className="py-10 bg-gray-100 border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="flex items-center gap-3 mb-5">
@@ -44,11 +44,11 @@ export function SocialChannelsSection() {
                 className="flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#7B44CF] text-white text-sm font-bold transition-all duration-200 hover:scale-[1.03] active:scale-[0.98] no-underline"
                 style={{ boxShadow: '0 0 18px rgba(123,68,207,0.45), 0 4px 12px rgba(123,68,207,0.3)' }}
               >
-                <span className="bg-white rounded-md px-1.5 py-0.5 flex items-center">
+                <span className="w-5 h-5 rounded-full bg-white flex items-center justify-center overflow-hidden shrink-0">
                   <img
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg/1280px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg.png"
                     alt="MAX"
-                    className="h-3.5 w-auto object-contain block"
+                    className="w-4 h-auto object-contain block"
                   />
                 </span>
                 MAX

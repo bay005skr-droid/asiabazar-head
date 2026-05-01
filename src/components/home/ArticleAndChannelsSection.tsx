@@ -78,7 +78,7 @@ export function ArticleAndChannelsSection() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
 
               {/* Описание — 2 строки */}
-              <p className="text-gray-500 text-sm leading-relaxed max-w-sm">
+              <p className="text-gray-500 text-sm leading-relaxed flex-1">
                 Свежие авто в наличии, актуальные цены из Кореи, разбор утильсбора и таможни — в наших каналах. Подписывайтесь, чтобы не пропустить выгодное предложение.
               </p>
 

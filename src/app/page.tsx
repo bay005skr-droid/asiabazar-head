@@ -3,6 +3,7 @@ import { ArticlePromoSection } from '@/components/home/ArticlePromoSection'
 import { CatalogPreviewSection } from '@/components/home/CatalogPreviewSection'
 import { FeaturedArticleSection } from '@/components/home/FeaturedArticleSection'
 import { HomeStatsSection } from '@/components/home/HomeStatsSection'
+import { SocialChannelsSection } from '@/components/home/SocialChannelsSection'
 import { HowWeWorkSection } from '@/components/home/HowWeWorkSection'
 import { ReviewsSection } from '@/components/home/ReviewsSection'
 import { FaqSection } from '@/components/home/FaqSection'
@@ -29,6 +30,7 @@ export default async function HomePage() {
       <CatalogPreviewSection cars={cars} />
       <HomeStatsSection />
       <ArticlePromoSection cars={articleCars} />
+      <SocialChannelsSection />
       <HowWeWorkSection />
       <ReviewsSection />
       <FaqSection />

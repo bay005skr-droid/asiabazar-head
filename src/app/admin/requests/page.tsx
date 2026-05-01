@@ -1,6 +1,4 @@
 import { Metadata } from 'next'
-import Link from 'next/link'
-import { Download } from 'lucide-react'
 import { Suspense } from 'react'
 import prisma from '@/lib/prisma'
 import { AdminRequestActions } from '@/components/admin/AdminRequestActions'
@@ -51,19 +49,9 @@ export default async function AdminRequestsPage({ searchParams }: Props) {
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <Suspense>
-            <RequestsDateFilter total={all} filtered={requests.length} />
-          </Suspense>
-          <Link
-            href={exportHref}
-            className="admin-btn-secondary text-xs px-3 py-2 flex items-center gap-1.5"
-            title="Скачать CSV (открывается в Google Таблицах и Excel)"
-          >
-            <Download size={13} />
-            Экспорт CSV
-          </Link>
-        </div>
+        <Suspense>
+          <RequestsDateFilter total={all} filtered={requests.length} exportHref={exportHref} />
+        </Suspense>
       </div>
 
       <div className="admin-card overflow-hidden">

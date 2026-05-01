@@ -27,10 +27,10 @@ export default async function HomePage() {
     <>
       <HeroSection cars={cars} />
       <FeaturedArticleSection />
+      <SocialChannelsSection />
       <CatalogPreviewSection cars={cars} />
       <HomeStatsSection />
       <ArticlePromoSection cars={articleCars} />
-      <SocialChannelsSection />
       <HowWeWorkSection />
       <ReviewsSection />
       <FaqSection />

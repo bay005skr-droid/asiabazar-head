@@ -8,19 +8,16 @@ import { RequestsDateFilter } from '@/components/admin/RequestsDateFilter'
 
 export const metadata: Metadata = { title: 'Заявки' }
 
-interface Props { searchParams: { date?: string } }
+interface Props { searchParams: { from?: string; to?: string } }
 
 export default async function AdminRequestsPage({ searchParams }: Props) {
-  const date = searchParams.date
+  const { from, to } = searchParams
 
-  // Build date range filter if date selected
   let where = {}
-  if (date) {
-    const from = new Date(date)
-    from.setHours(0, 0, 0, 0)
-    const to = new Date(date)
-    to.setHours(23, 59, 59, 999)
-    where = { createdAt: { gte: from, lte: to } }
+  if (from || to) {
+    const gte = from ? (() => { const d = new Date(from); d.setHours(0, 0, 0, 0); return d })() : undefined
+    const lte = to   ? (() => { const d = new Date(to);   d.setHours(23, 59, 59, 999); return d })() : undefined
+    where = { createdAt: { ...(gte ? { gte } : {}), ...(lte ? { lte } : {}) } }
   }
 
   const [all, requests] = await Promise.all([
@@ -31,10 +28,11 @@ export default async function AdminRequestsPage({ searchParams }: Props) {
   const unread = requests.filter((r) => !r.isRead).length
   const messengerLabels: Record<string, string> = { telegram: 'TG', max: 'MAX', whatsapp: 'WA' }
 
-  // Export link with date filter applied
-  const exportHref = date
-    ? `/api/admin/requests/export?date=${date}`
-    : '/api/admin/requests/export'
+  const exportParams = new URLSearchParams()
+  if (from) exportParams.set('from', from)
+  if (to)   exportParams.set('to', to)
+  const exportHref = `/api/admin/requests/export${exportParams.size ? `?${exportParams}` : ''}`
+  const active = from || to
 
   return (
     <div className="space-y-6">
@@ -43,11 +41,11 @@ export default async function AdminRequestsPage({ searchParams }: Props) {
           <div>
             <h1 className="text-2xl font-black text-white">Заявки</h1>
             <p className="text-white/40 text-sm mt-0.5">
-              {date ? `${requests.length} за день` : `${all} всего`}
-              {!date && unread > 0 && ` · ${unread} непрочитанных`}
+              {active ? `${requests.length} за период` : `${all} всего`}
+              {!active && unread > 0 && ` · ${unread} непрочитанных`}
             </p>
           </div>
-          {!date && unread > 0 && (
+          {!active && unread > 0 && (
             <span className="px-3 py-1 rounded-full bg-brand-red/20 border border-brand-red/30 text-brand-red text-sm font-bold">
               {unread} новых
             </span>
@@ -128,7 +126,7 @@ export default async function AdminRequestsPage({ searchParams }: Props) {
           </table>
           {requests.length === 0 && (
             <div className="text-center py-12 text-white/30">
-              {date ? 'За этот день заявок нет' : 'Заявок пока нет'}
+              {active ? 'За этот период заявок нет' : 'Заявок пока нет'}
             </div>
           )}
         </div>

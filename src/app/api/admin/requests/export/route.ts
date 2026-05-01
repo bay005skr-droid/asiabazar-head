@@ -6,13 +6,14 @@ export async function GET(req: Request) {
   if (!(await getAdminSession())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = new URL(req.url)
-  const date = searchParams.get('date')
+  const from = searchParams.get('from')
+  const to   = searchParams.get('to')
 
   let where = {}
-  if (date) {
-    const from = new Date(date); from.setHours(0, 0, 0, 0)
-    const to = new Date(date);   to.setHours(23, 59, 59, 999)
-    where = { createdAt: { gte: from, lte: to } }
+  if (from || to) {
+    const gte = from ? (() => { const d = new Date(from); d.setHours(0, 0, 0, 0); return d })() : undefined
+    const lte = to   ? (() => { const d = new Date(to);   d.setHours(23, 59, 59, 999); return d })() : undefined
+    where = { createdAt: { ...(gte ? { gte } : {}), ...(lte ? { lte } : {}) } }
   }
 
   const requests = await prisma.contactRequest.findMany({ where, orderBy: { createdAt: 'desc' } })

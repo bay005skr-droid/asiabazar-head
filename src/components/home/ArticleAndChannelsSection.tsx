@@ -68,54 +68,44 @@ export function ArticleAndChannelsSection() {
         <div className="border-t border-gray-200" />
 
         {/* ── Каналы ── */}
-        <div>
-          <div className="flex items-center gap-3 mb-5">
-            <div className="divider-red" style={{ marginBottom: 0 }} />
-            <h2 className="text-xl font-black text-gray-900">Больше информации</h2>
-          </div>
+        <div className="text-center">
+          <div className="divider-red mx-auto mb-4" />
+          <h2 className="text-xl font-black text-gray-900 mb-3">Больше информации</h2>
+          <p className="text-gray-500 text-sm leading-relaxed mb-6">
+            Свежие авто в наличии, актуальные цены из Кореи, разбор утильсбора и таможни — в наших каналах.{' '}
+            <span className="font-bold text-gray-700">Подписывайтесь</span>, чтобы не пропустить выгодное предложение.
+          </p>
 
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-card px-6 py-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+          <div className="flex justify-center gap-3">
+            <Link
+              href="https://t.me/asiabazarkr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-6 py-3 rounded-xl bg-[#229ED9] text-white text-sm font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] no-underline"
+              style={{ boxShadow: '0 0 16px rgba(34,158,217,0.4), 0 4px 10px rgba(34,158,217,0.25)' }}
+            >
+              <span className="w-6 h-6 rounded-md bg-white flex items-center justify-center shrink-0">
+                <TelegramIcon />
+              </span>
+              Telegram
+            </Link>
 
-              {/* Описание — 2 строки */}
-              <p className="text-gray-500 text-sm leading-relaxed flex-1">
-                Свежие авто в наличии, актуальные цены из Кореи, разбор утильсбора и таможни — в наших каналах. <span className="font-bold text-gray-700">Подписывайтесь</span>, чтобы не пропустить выгодное предложение.
-              </p>
-
-              {/* Кнопки вертикально */}
-              <div className="flex flex-col gap-2.5 shrink-0 w-52">
-                <Link
-                  href="https://t.me/asiabazarkr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#229ED9] text-white text-sm font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] no-underline"
-                  style={{ boxShadow: '0 0 16px rgba(34,158,217,0.4), 0 4px 10px rgba(34,158,217,0.25)' }}
-                >
-                  <span className="w-6 h-6 rounded-md bg-white flex items-center justify-center shrink-0">
-                    <TelegramIcon />
-                  </span>
-                  Telegram
-                </Link>
-
-                <Link
-                  href="https://max.ru/join/QufBAWxXDzIyo_6_tokZ4e_SEJCTy7bH_9_KYQ10Hjs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-5 py-3 rounded-xl bg-[#7B44CF] text-white text-sm font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] no-underline"
-                  style={{ boxShadow: '0 0 16px rgba(123,68,207,0.4), 0 4px 10px rgba(123,68,207,0.25)' }}
-                >
-                  <span className="w-6 h-6 rounded-md bg-white flex items-center justify-center shrink-0 overflow-hidden">
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg/1280px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg.png"
-                      alt="MAX"
-                      className="w-4 h-auto object-contain block"
-                    />
-                  </span>
-                  MAX
-                </Link>
-              </div>
-
-            </div>
+            <Link
+              href="https://max.ru/join/QufBAWxXDzIyo_6_tokZ4e_SEJCTy7bH_9_KYQ10Hjs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-6 py-3 rounded-xl bg-[#7B44CF] text-white text-sm font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] no-underline"
+              style={{ boxShadow: '0 0 16px rgba(123,68,207,0.4), 0 4px 10px rgba(123,68,207,0.25)' }}
+            >
+              <span className="w-6 h-6 rounded-md bg-white flex items-center justify-center shrink-0 overflow-hidden">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg/1280px-%D0%9B%D0%BE%D0%B3%D0%BE%D1%82%D0%B8%D0%BF_MAX.svg.png"
+                  alt="MAX"
+                  className="w-4 h-auto object-contain block"
+                />
+              </span>
+              MAX
+            </Link>
           </div>
         </div>
 

@@ -76,12 +76,12 @@ export function ArticleAndChannelsSection() {
             <span className="font-bold text-gray-700">Подписывайтесь</span>, чтобы не пропустить выгодное предложение.
           </p>
 
-          <div className="flex justify-center gap-3">
+          <div className="flex justify-center gap-3 w-fit mx-auto">
             <Link
               href="https://t.me/asiabazarkr"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-6 py-3 rounded-xl bg-[#229ED9] text-white text-sm font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] no-underline"
+              className="flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-[#229ED9] text-white text-sm font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] no-underline w-44"
               style={{ boxShadow: '0 0 16px rgba(34,158,217,0.4), 0 4px 10px rgba(34,158,217,0.25)' }}
             >
               <span className="w-6 h-6 rounded-md bg-white flex items-center justify-center shrink-0">
@@ -94,7 +94,7 @@ export function ArticleAndChannelsSection() {
               href="https://max.ru/join/QufBAWxXDzIyo_6_tokZ4e_SEJCTy7bH_9_KYQ10Hjs"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-6 py-3 rounded-xl bg-[#7B44CF] text-white text-sm font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] no-underline"
+              className="flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-[#7B44CF] text-white text-sm font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] no-underline w-44"
               style={{ boxShadow: '0 0 16px rgba(123,68,207,0.4), 0 4px 10px rgba(123,68,207,0.25)' }}
             >
               <span className="w-6 h-6 rounded-md bg-white flex items-center justify-center shrink-0 overflow-hidden">

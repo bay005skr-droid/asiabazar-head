@@ -10,7 +10,9 @@ import { trackEvent } from '@/components/analytics/AnalyticsTracker'
 
 const schema = z.object({
   name: z.string().min(2, 'Введите имя').max(80),
-  phone: z.string().min(10, 'Введите корректный номер'),
+  phone: z.string().refine((v) => /^(\+7|8)\d{10}$/.test(v.replace(/[\s\-\(\)]/g, '')), {
+    message: 'Введите российский номер: +7 (XXX) XXX-XX-XX',
+  }),
   desiredCar: z.string().optional(),
   deliveryCity: z.string().optional(),
   preferredMessenger: z.enum(['telegram', 'max', 'whatsapp']),
@@ -59,6 +61,21 @@ export function ContactForm({ compact }: ContactFormProps) {
   })
 
   const messenger = watch('preferredMessenger')
+
+  const formatPhone = (raw: string) => {
+    const digits = raw.replace(/\D/g, '')
+    // Нормализуем: убираем ведущую 7 или 8
+    const local = digits.startsWith('7') || digits.startsWith('8')
+      ? digits.slice(1)
+      : digits
+    const d = local.slice(0, 10)
+    let result = '+7'
+    if (d.length > 0) result += ' (' + d.slice(0, 3)
+    if (d.length >= 3) result += ') ' + d.slice(3, 6)
+    if (d.length >= 6) result += '-' + d.slice(6, 8)
+    if (d.length >= 8) result += '-' + d.slice(8, 10)
+    return result
+  }
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -109,6 +126,8 @@ export function ContactForm({ compact }: ContactFormProps) {
             {...register('phone')}
             placeholder="+7 (___) ___-__-__"
             type="tel"
+            inputMode="tel"
+            onChange={(e) => setValue('phone', formatPhone(e.target.value), { shouldValidate: false })}
             className={cn('input-base', errors.phone && 'border-red-400 focus:border-red-500')}
           />
           {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone.message}</p>}

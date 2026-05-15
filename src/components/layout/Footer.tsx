@@ -56,10 +56,19 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-20 md:pb-0">
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <p className="text-gray-600 text-xs">
               © {new Date().getFullYear()} AsiaBazar. Все права защищены.
             </p>
+            <p className="text-gray-700 text-xs">
+              ИП Скрипниченко Б. О. · ИНН 000000000000
+            </p>
+            <Link
+              href="/privacy"
+              className="text-gray-600 hover:text-gray-400 text-xs transition-colors underline underline-offset-2"
+            >
+              Политика конфиденциальности
+            </Link>
           </div>
 
           {/* Visible admin button */}

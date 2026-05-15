@@ -10,9 +10,10 @@ import { trackEvent } from '@/components/analytics/AnalyticsTracker'
 
 const schema = z.object({
   name: z.string().min(2, 'Введите имя').max(80),
-  phone: z.string().refine((v) => /^(\+7|8)\d{10}$/.test(v.replace(/[\s\-\(\)]/g, '')), {
-    message: 'Введите российский номер: +7 (XXX) XXX-XX-XX',
-  }),
+  phone: z.string().refine((v) => {
+    const clean = v.replace(/[\s\-\(\)]/g, '')
+    return /^(\+7|8)\d{10}$/.test(clean) || /^\+375\d{9}$/.test(clean)
+  }, { message: 'Введите российский (+7) или белорусский (+375) номер' }),
   desiredCar: z.string().optional(),
   deliveryCity: z.string().optional(),
   preferredMessenger: z.enum(['telegram', 'max', 'whatsapp']),
